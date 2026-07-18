@@ -35,7 +35,7 @@ const ProductCard = ({ product, index, isSelected, onToggle }: { product: any, i
       <img 
         src={product.image} 
         alt={product.name} 
-        className="w-full h-full object-cover opacity-90 mix-blend-screen group-hover:scale-110 transition-transform duration-700 ease-out" 
+        className="w-full h-full object-cover rounded-[1rem] sm:rounded-[1.5rem] opacity-90 mix-blend-screen group-hover:scale-110 transition-transform duration-700 ease-out" 
       />
     </div>
 
@@ -47,9 +47,15 @@ const ProductCard = ({ product, index, isSelected, onToggle }: { product: any, i
       </div>
       
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mt-2 gap-2 xl:gap-0">
-        <span className="font-outfit font-bold text-base sm:text-xl text-foreground">
-          {product.price}
-        </span>
+        {product.price ? (
+          <span className="font-outfit font-bold text-base sm:text-xl text-foreground">
+            {product.price}
+          </span>
+        ) : (
+          <span className="font-outfit font-bold text-sm sm:text-base text-primary uppercase tracking-wider">
+            Enquire
+          </span>
+        )}
         <button 
           className={`w-full xl:w-auto px-4 py-1.5 sm:px-6 sm:py-2.5 rounded-full font-semibold transition-colors text-[10px] sm:text-sm ${
             isSelected ? 'bg-primary text-primary-foreground' : 'bg-foreground text-background hover:bg-primary hover:text-primary-foreground'
@@ -64,8 +70,11 @@ const ProductCard = ({ product, index, isSelected, onToggle }: { product: any, i
   );
 };
 
+const CATEGORIES = ["All", "Machine", "Aesthetic Products", "PMU Products", "Korean Products"];
+
 const Products = () => {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [activeCategory, setActiveCategory] = useState("Machine");
 
   const handleToggle = (id: number) => {
     setSelectedIds(prev => 
@@ -121,10 +130,27 @@ const Products = () => {
           <p className="mt-10 text-foreground/70 max-w-2xl text-lg">
             Explore our state-of-the-art collection of Korean laser systems and aesthetic devices, engineered for uncompromising clinical results.
           </p>
+
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-12 w-full max-w-4xl">
+            {CATEGORIES.map(category => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 sm:px-6 sm:py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  activeCategory === category
+                    ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgba(212,175,55,0.4)] scale-105'
+                    : 'bg-card border border-border/50 text-foreground/70 hover:border-primary/50 hover:text-primary'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-          {PRODUCTS.map((product, i) => (
+          <AnimatePresence mode="popLayout">
+            {PRODUCTS.filter(p => activeCategory === "All" || p.category === activeCategory).map((product, i) => (
             <ProductCard 
               key={product.id} 
               product={product} 
@@ -132,7 +158,8 @@ const Products = () => {
               isSelected={selectedIds.includes(product.id)}
               onToggle={() => handleToggle(product.id)}
             />
-          ))}
+            ))}
+          </AnimatePresence>
         </div>
 
       </div>

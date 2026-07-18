@@ -42,19 +42,19 @@ const ProductDetail = () => {
           <span>Back to Products</span>
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Image Section */}
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative w-full aspect-square md:aspect-[4/3] lg:aspect-square rounded-[2rem] sm:rounded-[3rem] overflow-hidden bg-primary/5 border border-border/50 shadow-2xl"
+            className="relative w-full aspect-square sm:aspect-[4/3] lg:aspect-[4/5] rounded-[2rem] sm:rounded-[3rem] overflow-hidden bg-primary/5 border border-border/50 shadow-2xl lg:sticky lg:top-32"
           >
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent z-10 pointer-events-none" />
             <img 
               src={product.image} 
               alt={product.name} 
-              className="w-full h-full object-cover mix-blend-screen"
+              className="w-full h-full object-cover rounded-[2rem] sm:rounded-[3rem] mix-blend-screen"
             />
           </motion.div>
 
@@ -73,37 +73,94 @@ const ProductDetail = () => {
               {product.name}
             </h1>
             
-            <div className="text-2xl sm:text-3xl font-outfit font-bold text-primary mb-6">
-              {product.price}
-            </div>
+            {product.price && (
+              <div className="text-2xl sm:text-3xl font-outfit font-bold text-primary mb-6">
+                {product.price}
+              </div>
+            )}
             
             <p className="text-lg text-foreground/70 mb-8 leading-relaxed">
               {product.description}
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-              <div className="flex items-start gap-3 p-4 rounded-2xl bg-card border border-border/50">
-                <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
+            {/* Check if product has extended details */}
+            {product.longDescription ? (
+              <div className="mb-10 space-y-8">
+                {/* Key Benefits */}
                 <div>
-                  <h4 className="font-bold mb-1">Premium Quality</h4>
-                  <p className="text-sm text-foreground/60">Built with top-grade materials for clinical precision.</p>
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-primary" /> Key Benefits</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.longDescription.keyBenefits.map((benefit: string, idx: number) => (
+                      <span key={idx} className="px-3 py-1.5 rounded-full bg-card border border-border/50 text-sm">{benefit}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Wavelengths */}
+                {product.longDescription.wavelengths && product.longDescription.wavelengths.length > 0 && (
+                  <div>
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Zap className="w-5 h-5 text-primary" /> Wavelength Capabilities</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {product.longDescription.wavelengths.map((wl: any, idx: number) => (
+                        <div key={idx} className="p-3 rounded-xl bg-card border border-border/50">
+                          <span className="font-bold text-primary block mb-1">{wl.name}</span>
+                          <span className="text-sm text-foreground/70">{wl.desc}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Handpiece */}
+                {product.longDescription.handpiece && (
+                  <div>
+                    <h3 className="text-xl font-bold mb-2 flex items-center gap-2"><Settings className="w-5 h-5 text-primary" /> Features & Handpiece</h3>
+                    <p className="text-sm text-foreground/70 p-3 rounded-xl bg-card border border-border/50">{product.longDescription.handpiece}</p>
+                  </div>
+                )}
+
+                {/* Technical Specs Table */}
+                <div>
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Shield className="w-5 h-5 text-primary" /> Technical Specifications</h3>
+                  <div className="rounded-2xl overflow-hidden border border-border/50 bg-card">
+                    <table className="w-full text-sm text-left">
+                      <tbody className="divide-y divide-border/50">
+                        {product.longDescription.specifications.map((spec: any, idx: number) => (
+                          <tr key={idx} className="hover:bg-primary/5 transition-colors">
+                            <th className="px-4 py-3 font-semibold text-foreground/90 w-1/3 bg-background/30">{spec.label}</th>
+                            <td className="px-4 py-3 text-foreground/70">{spec.value}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 rounded-2xl bg-card border border-border/50">
-                <Shield className="w-6 h-6 text-primary shrink-0" />
-                <div>
-                  <h4 className="font-bold mb-1">Warranty Support</h4>
-                  <p className="text-sm text-foreground/60">Comprehensive technical assistance and warranty.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-card border border-border/50">
+                  <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
+                  <div>
+                    <h4 className="font-bold mb-1">Premium Quality</h4>
+                    <p className="text-sm text-foreground/60">Built with top-grade materials for clinical precision.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-card border border-border/50">
+                  <Shield className="w-6 h-6 text-primary shrink-0" />
+                  <div>
+                    <h4 className="font-bold mb-1">Warranty Support</h4>
+                    <p className="text-sm text-foreground/60">Comprehensive technical assistance and warranty.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-card border border-border/50 sm:col-span-2">
+                  <Settings className="w-6 h-6 text-primary shrink-0" />
+                  <div>
+                    <h4 className="font-bold mb-1">Custom Parameters</h4>
+                    <p className="text-sm text-foreground/60">Adjustable settings to suit various dermatology needs.</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 rounded-2xl bg-card border border-border/50 sm:col-span-2">
-                <Settings className="w-6 h-6 text-primary shrink-0" />
-                <div>
-                  <h4 className="font-bold mb-1">Custom Parameters</h4>
-                  <p className="text-sm text-foreground/60">Adjustable settings to suit various dermatology needs.</p>
-                </div>
-              </div>
-            </div>
+            )}
 
             <div className="flex flex-col sm:flex-row gap-4">
               <button 
