@@ -21,12 +21,12 @@ const ScrollToTop = () => {
 };
 
 const NAV_LINKS = [
-  { name: 'Home', href: '#home' },
-  { name: 'About Us', href: '#about' },
-  { name: 'Products', href: '#products' },
-  { name: 'Why Choose Us', href: '#why-us' },
-  { name: 'Projects / Portfolio', href: '#portfolio' },
-  { name: 'Contact Us', href: '#contact' },
+  { name: 'Home', href: '/#home' },
+  { name: 'About Us', href: '/#about' },
+  { name: 'Products', href: '/#products' },
+  { name: 'Why Choose Us', href: '/#why-us' },
+  { name: 'Projects / Portfolio', href: '/#portfolio' },
+  { name: 'Contact Us', href: '/#contact' },
 ];
 
 const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => void }) => {
@@ -102,23 +102,23 @@ const MobileBottomBar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme
       <div className={`rounded-full px-6 py-3 flex justify-between items-center transition-all duration-300 ${
         isScrolled ? 'bg-card/80 backdrop-blur-xl border border-border/50 shadow-2xl shadow-black/20' : 'bg-transparent border border-transparent'
       }`}>
-        <a href="#home" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
+        <a href="/#home" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
           <Home className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
           <span className="text-[10px] font-medium dark:text-foreground/80">Home</span>
         </a>
-        <a href="#about" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
+        <a href="/#about" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
           <Info className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
           <span className="text-[10px] font-medium dark:text-foreground/80">About</span>
         </a>
-        <a href="#products" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
+        <a href="/#products" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
           <Package className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
           <span className="text-[10px] font-medium dark:text-foreground/80">Products</span>
         </a>
-        <a href="#portfolio" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
+        <a href="/#portfolio" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
           <Briefcase className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
           <span className="text-[10px] font-medium dark:text-foreground/80">Projects</span>
         </a>
-        <a href="#contact" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
+        <a href="/#contact" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
           <MessageSquare className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
           <span className="text-[10px] font-medium dark:text-foreground/80">Contact</span>
         </a>

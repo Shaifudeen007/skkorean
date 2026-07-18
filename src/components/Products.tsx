@@ -4,8 +4,9 @@ import { Heart, CheckCircle2, Circle, MessageCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PRODUCTS } from '../data/products';
 
-const ProductCard = ({ product, index, isSelected, onToggle }: { product: any, index: number, isSelected: boolean, onToggle: () => void }) => {
+const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: any, index: number, quantity: number, onAdd: () => void, onRemove: () => void }) => {
   const navigate = useNavigate();
+  const isSelected = quantity > 0;
 
   return (
     <motion.div 
@@ -24,7 +25,7 @@ const ProductCard = ({ product, index, isSelected, onToggle }: { product: any, i
         className={`absolute top-2 right-2 sm:top-3 sm:right-3 z-20 p-2 sm:p-2.5 rounded-full backdrop-blur-md transition-all ${
           isSelected ? 'bg-primary text-primary-foreground' : 'bg-background/50 text-foreground/70 hover:text-primary hover:bg-background'
         }`}
-        onClick={(e) => { e.stopPropagation(); onToggle(); }}
+        onClick={(e) => { e.stopPropagation(); if (isSelected) onRemove(); else onAdd(); }}
       >
         {isSelected ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" /> : <Circle className="w-4 h-4 sm:w-5 sm:h-5" />}
       </button>
@@ -56,14 +57,31 @@ const ProductCard = ({ product, index, isSelected, onToggle }: { product: any, i
             Enquire
           </span>
         )}
-        <button 
-          className={`w-full xl:w-auto px-4 py-1.5 sm:px-6 sm:py-2.5 rounded-full font-semibold transition-colors text-[10px] sm:text-sm ${
-            isSelected ? 'bg-primary text-primary-foreground' : 'bg-foreground text-background hover:bg-primary hover:text-primary-foreground'
-          }`}
-          onClick={(e) => { e.stopPropagation(); onToggle(); }}
-        >
-          {isSelected ? 'Selected' : 'Select'}
-        </button>
+        
+        {isSelected ? (
+          <div className="flex items-center gap-2 sm:gap-3 bg-primary/20 rounded-full px-2 py-1 sm:px-3 sm:py-1.5 w-full xl:w-auto justify-between xl:justify-center">
+            <button 
+              onClick={(e) => { e.stopPropagation(); onRemove(); }} 
+              className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full bg-background text-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-bold text-lg leading-none pb-0.5"
+            >
+              -
+            </button>
+            <span className="font-bold text-sm sm:text-base min-w-[20px] text-center text-foreground">{quantity}</span>
+            <button 
+              onClick={(e) => { e.stopPropagation(); onAdd(); }} 
+              className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-full bg-background text-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-bold text-lg leading-none pb-0.5"
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <button 
+            className="w-full xl:w-auto px-4 py-1.5 sm:px-6 sm:py-2.5 rounded-full font-semibold transition-colors text-[10px] sm:text-sm bg-foreground text-background hover:bg-primary hover:text-primary-foreground"
+            onClick={(e) => { e.stopPropagation(); onAdd(); }}
+          >
+            Select
+          </button>
+        )}
       </div>
     </div>
   </motion.div>
@@ -72,25 +90,59 @@ const ProductCard = ({ product, index, isSelected, onToggle }: { product: any, i
 
 const CATEGORIES = ["All", "Machine", "Aesthetic Products", "PMU Products", "Korean Products"];
 
-const Products = () => {
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const [activeCategory, setActiveCategory] = useState("Machine");
+const MACHINE_FILTERS = [
+  { label: "All Machines", keyword: "" },
+  { label: "Laser", keyword: "laser" },
+  { label: "Hair & Scalp", keyword: "hair" },
+  { label: "Facial & Face", keyword: "fac" },
+  { label: "Hydra", keyword: "hydra" },
+  { label: "Body Sculpting", keyword: "sculpt" }
+];
 
-  const handleToggle = (id: number) => {
-    setSelectedIds(prev => 
-      prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
-    );
+const Products = () => {
+  const [selectedItems, setSelectedItems] = useState<Record<number, number>>({});
+  const [activeCategory, setActiveCategory] = useState("Machine");
+  const [activeMachineFilter, setActiveMachineFilter] = useState("");
+  const [visibleCount, setVisibleCount] = useState(16);
+
+  const handleAdd = (id: number) => {
+    setSelectedItems(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+  };
+
+  const handleRemove = (id: number) => {
+    setSelectedItems(prev => {
+      const newItems = { ...prev };
+      if (newItems[id] > 1) {
+        newItems[id] -= 1;
+      } else {
+        delete newItems[id];
+      }
+      return newItems;
+    });
   };
 
   const handleWhatsAppCheckout = () => {
-    const selectedProducts = PRODUCTS.filter(p => selectedIds.includes(p.id));
+    const selectedProducts = PRODUCTS.filter(p => selectedItems[p.id]);
     const message = `Hello SK Korean Technologies! I am interested in exploring pricing and details for the following machines:\n\n` + 
-                    selectedProducts.map((p, i) => `${i + 1}. ${p.name}`).join('\n') + 
+                    selectedProducts.map((p, i) => `${i + 1}. ${p.name} (Qty: ${selectedItems[p.id]})`).join('\n') + 
                     `\n\nPlease provide me with more information.`;
     
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/918610345830?text=${encodedMessage}`, '_blank');
   };
+
+  const filteredProducts = PRODUCTS.filter(p => {
+    const categoryMatch = activeCategory === "All" || p.category === activeCategory;
+    if (!categoryMatch) return false;
+    
+    if (activeCategory === "Machine" && activeMachineFilter !== "") {
+      const keyword = activeMachineFilter.toLowerCase();
+      const searchString = `${p.name} ${p.description} ${p.longDescription?.keyBenefits?.join(' ') || ''}`.toLowerCase();
+      return searchString.includes(keyword);
+    }
+    
+    return true;
+  });
 
   return (
     <section id="products" className="pt-20 pb-8 relative overflow-hidden scroll-mt-20">
@@ -135,7 +187,11 @@ const Products = () => {
             {CATEGORIES.map(category => (
               <button
                 key={category}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => {
+                  setActiveCategory(category);
+                  setActiveMachineFilter("");
+                  setVisibleCount(16);
+                }}
                 className={`px-4 py-2 sm:px-6 sm:py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
                   activeCategory === category
                     ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgba(212,175,55,0.4)] scale-105'
@@ -146,26 +202,63 @@ const Products = () => {
               </button>
             ))}
           </div>
+
+          {activeCategory === "Machine" && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="flex flex-wrap justify-center gap-2 mt-6 w-full max-w-3xl"
+            >
+              {MACHINE_FILTERS.map(filter => (
+                <button
+                  key={filter.label}
+                  onClick={() => {
+                    setActiveMachineFilter(filter.keyword);
+                    setVisibleCount(16);
+                  }}
+                  className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm transition-all duration-300 ${
+                    activeMachineFilter === filter.keyword
+                      ? 'bg-primary/20 text-primary border border-primary'
+                      : 'bg-transparent border border-border/50 text-foreground/60 hover:border-primary/30 hover:text-primary/80'
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </motion.div>
+          )}
         </motion.div>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           <AnimatePresence mode="popLayout">
-            {PRODUCTS.filter(p => activeCategory === "All" || p.category === activeCategory).map((product, i) => (
+            {filteredProducts.slice(0, visibleCount).map((product, i) => (
             <ProductCard 
               key={product.id} 
               product={product} 
               index={i} 
-              isSelected={selectedIds.includes(product.id)}
-              onToggle={() => handleToggle(product.id)}
+              quantity={selectedItems[product.id] || 0}
+              onAdd={() => handleAdd(product.id)}
+              onRemove={() => handleRemove(product.id)}
             />
             ))}
           </AnimatePresence>
         </div>
 
+        {filteredProducts.length > visibleCount && (
+          <div className="flex justify-center mt-12 pb-4">
+            <button 
+              onClick={() => setVisibleCount(prev => prev + 16)}
+              className="px-8 py-3 rounded-full bg-card border-2 border-primary/50 text-foreground font-semibold hover:border-primary hover:text-primary transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_25px_rgba(212,175,55,0.3)]"
+            >
+              Load More Products
+            </button>
+          </div>
+        )}
       </div>
 
       <AnimatePresence>
-        {selectedIds.length > 0 && (
+        {Object.keys(selectedItems).length > 0 && (
           <motion.div 
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
@@ -175,7 +268,7 @@ const Products = () => {
             <div className="bg-card/95 backdrop-blur-xl border-2 border-primary/50 shadow-[0_10px_40px_rgba(212,175,55,0.3)] rounded-full px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center gap-4">
               <div className="flex flex-col">
                 <span className="font-outfit font-bold text-foreground text-sm sm:text-base">
-                  {selectedIds.length} Machine{selectedIds.length > 1 ? 's' : ''} Selected
+                  {Object.values(selectedItems).reduce((a, b) => a + b, 0)} Machine{Object.values(selectedItems).reduce((a, b) => a + b, 0) > 1 ? 's' : ''} Selected
                 </span>
                 <span className="text-[10px] sm:text-xs text-foreground/70">Ready for consultation</span>
               </div>
