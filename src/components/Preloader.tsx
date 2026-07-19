@@ -57,22 +57,22 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
         </div>
 
         {/* Brand Text Reveal */}
-        <div className="text-3xl md:text-5xl font-bold tracking-tight font-outfit flex overflow-hidden">
+        <div className="text-xl sm:text-3xl md:text-5xl font-bold tracking-tight font-outfit flex overflow-hidden max-w-[90vw]">
           <motion.div
             initial={{ y: "100%", opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5, ease: "backOut" }}
-            className="flex items-center"
+            className="flex flex-col md:flex-row items-center text-center md:text-left"
           >
-            <span className="bg-clip-text text-transparent bg-glare-gradient bg-[length:200%_auto] animate-text-glare pr-2">SK</span>
-            <span className="bg-clip-text text-transparent bg-gold-gradient relative">
+            <span className="bg-clip-text text-transparent bg-glare-gradient bg-[length:200%_auto] animate-text-glare md:pr-2 mb-1 md:mb-0">SK</span>
+            <span className="bg-clip-text text-transparent bg-gold-gradient relative leading-snug">
               Korean Aesthetic Technologies
               {/* Animated underline */}
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 1.5, delay: 1, ease: "easeInOut" }}
-                className="absolute -bottom-2 left-0 h-[2px] bg-gold-gradient"
+                className="absolute -bottom-1 md:-bottom-2 left-0 h-[2px] bg-gold-gradient"
               />
             </span>
           </motion.div>
