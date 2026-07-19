@@ -5,31 +5,24 @@ import { ArrowRight, MapPin } from 'lucide-react';
 const PROJECTS = [
   {
     id: 1,
-    title: "Luxe Dermatology Center",
-    location: "Mumbai, India",
-    description: "Complete integration of 4 premium laser systems and advanced anti-aging devices for a flagship dermatology clinic.",
-    image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=800"
+    title: "Posh end unisex salon",
+    location: "Hosur",
+    description: "Premium aesthetic clinic setup with advanced laser and skin rejuvenation systems.",
+    image: "/portfolio/1.png"
   },
   {
     id: 2,
-    title: "Elite Aesthetics Spa",
-    location: "Dubai, UAE",
-    description: "Installation of next-generation body contouring machinery alongside comprehensive staff operational training.",
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=800"
+    title: "Sreesha aesthetic",
+    location: "Vijay Nagar, Bangalore",
+    description: "Complete integration of Korean aesthetic technology and professional skin care devices.",
+    image: "/portfolio/2.png"
   },
   {
     id: 3,
-    title: "Glow Medical Clinic",
-    location: "New Delhi, India",
-    description: "Equipped 3 newly constructed treatment rooms with our top-tier Korean facial and skin rejuvenation systems.",
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=800"
-  },
-  {
-    id: 4,
-    title: "Aura Beauty Lounge",
-    location: "Bangkok, Thailand",
-    description: "Strategic partnership providing continuous technical support and machinery upgrades for a rapidly expanding franchise.",
-    image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=800"
+    title: "Saghas aesthetic studio",
+    location: "Arakonam",
+    description: "State-of-the-art beauty and laser studio equipped with cutting-edge dermatology machines.",
+    image: "/portfolio/3.png"
   }
 ];
 
@@ -114,8 +107,7 @@ const Portfolio = () => {
                   </p>
                   
                   <div className="inline-flex items-center gap-2 text-primary text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span>View Case Study</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-0 h-0 hidden" />
                   </div>
                 </div>
               </div>

@@ -47,7 +47,7 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
           <div className="flex items-center">
             <span className="text-2xl font-bold tracking-tight">
               <span className="bg-clip-text text-transparent bg-glare-gradient bg-[length:200%_auto] animate-text-glare">SK</span>
-              <span className="bg-clip-text text-transparent bg-gold-gradient ml-1">Korean Technologies</span>
+              <span className="bg-clip-text text-transparent bg-gold-gradient ml-1">Korean Aesthetic Technologies</span>
             </span>
           </div>
           
@@ -150,10 +150,10 @@ const HomePage = ({ loading, setLoading }: { loading: boolean, setLoading: (l: b
     </AnimatePresence>
     <main id="home">
       <Hero loading={loading} />
-      <AboutUs />
-      <WhyChooseUs />
       <Portfolio />
       <Products />
+      <AboutUs />
+      <WhyChooseUs />
       <ContactUs />
     </main>
   </>

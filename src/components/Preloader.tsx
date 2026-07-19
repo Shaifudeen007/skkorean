@@ -38,7 +38,7 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
           <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden bg-background flex items-center justify-center p-1">
             <img 
               src="/logo/logo.jpeg" 
-              alt="SK Korean Technologies Logo" 
+              alt="SK Korean Aesthetic Technologies Logo" 
               className="w-full h-full object-cover rounded-full mix-blend-screen"
             />
             {/* Laser Scanner Line */}
@@ -66,7 +66,7 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
           >
             <span className="bg-clip-text text-transparent bg-glare-gradient bg-[length:200%_auto] animate-text-glare pr-2">SK</span>
             <span className="bg-clip-text text-transparent bg-gold-gradient relative">
-              Korean Technologies
+              Korean Aesthetic Technologies
               {/* Animated underline */}
               <motion.div 
                 initial={{ width: 0 }}

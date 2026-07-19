@@ -24,7 +24,7 @@ const ProductDetail = () => {
   }
 
   const handleWhatsAppEnquiry = () => {
-    const message = `Hello SK Korean Technologies! I am interested in exploring pricing and details for the ${product.name}.\n\nPlease provide me with more information.`;
+    const message = `Hello SK Korean Aesthetic Technologies! I am interested in exploring pricing and details for the ${product.name}.\n\nPlease provide me with more information.`;
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/918610345830?text=${encodedMessage}`, '_blank');
   };

@@ -46,7 +46,7 @@ const Footer = () => {
           >
             <span className="text-2xl font-bold tracking-tight mb-6">
               <span className="bg-clip-text text-transparent bg-glare-gradient bg-[length:200%_auto] animate-text-glare">SK</span>
-              <span className="bg-clip-text text-transparent bg-gold-gradient ml-1">Korean Technologies</span>
+              <span className="bg-clip-text text-transparent bg-gold-gradient ml-1">Korean Aesthetic Technologies</span>
             </span>
             <p className="text-foreground/60 text-sm leading-relaxed mb-8">
               The premier B2B distributor of elite South Korean laser systems and aesthetic devices, empowering professionals worldwide.
@@ -133,7 +133,7 @@ const Footer = () => {
           className="pt-8 border-t border-border/30 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left"
         >
           <p className="text-foreground/50 text-xs">
-            © {new Date().getFullYear()} SK Korean Technologies. All rights reserved.
+            © {new Date().getFullYear()} SK Korean Aesthetic Technologies. All rights reserved.
           </p>
           <p className="text-foreground/50 text-xs">
             Designed with <span className="text-primary">♥</span> for Premium Clinics.

@@ -49,9 +49,16 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
       
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mt-2 gap-2 xl:gap-0">
         {product.price ? (
-          <span className="font-outfit font-bold text-base sm:text-xl text-foreground">
-            {product.price}
-          </span>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-0 sm:gap-2">
+            {product.originalPrice && (
+              <span className="text-[10px] sm:text-xs text-foreground/50 line-through">
+                {product.originalPrice}
+              </span>
+            )}
+            <span className="font-outfit font-bold text-base sm:text-xl text-foreground">
+              {product.price}
+            </span>
+          </div>
         ) : (
           <span className="font-outfit font-bold text-sm sm:text-base text-primary uppercase tracking-wider">
             Enquire
@@ -91,18 +98,20 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
 const CATEGORIES = ["All", "Machine", "Aesthetic Products", "PMU Products", "Korean Products"];
 
 const MACHINE_FILTERS = [
-  { label: "All Machines", keyword: "" },
-  { label: "Laser", keyword: "laser" },
-  { label: "Hair & Scalp", keyword: "hair" },
-  { label: "Facial & Face", keyword: "fac" },
-  { label: "Hydra", keyword: "hydra" },
-  { label: "Body Sculpting", keyword: "sculpt" }
+  { label: "Diode & Pico Laser", keywords: ["diode"] },
+  { label: "CO2 Fractional Laser", keywords: ["co2"] },
+  { label: "Active Pico Laser", keywords: ["pico", "q-switched"] },
+  { label: "Premium Hydra Machines", keywords: ["hydra facial", "hydra plus", "dynamic hydra", "superbubble", "oxygen hydra", "premium hydra"] },
+  { label: "Cryolipolysis", keywords: ["cryo"] },
+  { label: "Laser Hair & Regrowth", keywords: ["hair removal", "laser hair device"] },
+  { label: "AI Analyzers", keywords: ["ai skin", "ai imager", "ai scalp"] },
+  { label: "HIFU", keywords: ["hifu"] },
+  { label: "Derma Beds", keywords: ["bed"] }
 ];
 
 const Products = () => {
   const [selectedItems, setSelectedItems] = useState<Record<number, number>>({});
   const [activeCategory, setActiveCategory] = useState("Machine");
-  const [activeMachineFilter, setActiveMachineFilter] = useState("");
   const [visibleCount, setVisibleCount] = useState(16);
 
   const handleAdd = (id: number) => {
@@ -134,13 +143,6 @@ const Products = () => {
   const filteredProducts = PRODUCTS.filter(p => {
     const categoryMatch = activeCategory === "All" || p.category === activeCategory;
     if (!categoryMatch) return false;
-    
-    if (activeCategory === "Machine" && activeMachineFilter !== "") {
-      const keyword = activeMachineFilter.toLowerCase();
-      const searchString = `${p.name} ${p.description} ${p.longDescription?.keyBenefits?.join(' ') || ''}`.toLowerCase();
-      return searchString.includes(keyword);
-    }
-    
     return true;
   });
 
@@ -189,7 +191,6 @@ const Products = () => {
                 key={category}
                 onClick={() => {
                   setActiveCategory(category);
-                  setActiveMachineFilter("");
                   setVisibleCount(16);
                 }}
                 className={`px-4 py-2 sm:px-6 sm:py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
@@ -203,47 +204,60 @@ const Products = () => {
             ))}
           </div>
 
-          {activeCategory === "Machine" && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="flex flex-wrap justify-center gap-2 mt-6 w-full max-w-3xl"
-            >
-              {MACHINE_FILTERS.map(filter => (
-                <button
-                  key={filter.label}
-                  onClick={() => {
-                    setActiveMachineFilter(filter.keyword);
-                    setVisibleCount(16);
-                  }}
-                  className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm transition-all duration-300 ${
-                    activeMachineFilter === filter.keyword
-                      ? 'bg-primary/20 text-primary border border-primary'
-                      : 'bg-transparent border border-border/50 text-foreground/60 hover:border-primary/30 hover:text-primary/80'
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </motion.div>
-          )}
         </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-          <AnimatePresence mode="popLayout">
-            {filteredProducts.slice(0, visibleCount).map((product, i) => (
-            <ProductCard 
-              key={product.id} 
-              product={product} 
-              index={i} 
-              quantity={selectedItems[product.id] || 0}
-              onAdd={() => handleAdd(product.id)}
-              onRemove={() => handleRemove(product.id)}
-            />
-            ))}
-          </AnimatePresence>
-        </div>
+        {activeCategory === "Machine" ? (
+          <div className="flex flex-col gap-16 w-full">
+            {MACHINE_FILTERS.map(filter => {
+              const sectionProducts = filteredProducts.filter(p => {
+                const searchString = `${p.name} ${p.description} ${p.longDescription?.keyBenefits?.join(' ') || ''}`.toLowerCase();
+                return filter.keywords.some(kw => searchString.includes(kw.toLowerCase()));
+              });
+
+              if (sectionProducts.length === 0) return null;
+
+              return (
+                <div key={filter.label} className="w-full">
+                  <div className="w-full flex justify-center mb-8">
+                    <div className="relative inline-block text-center">
+                      <h3 className="text-3xl sm:text-4xl font-serif font-bold text-foreground pb-4">
+                        {filter.label}
+                      </h3>
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(212,175,55,0.4)]"></div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+                    {sectionProducts.map((product, i) => (
+                      <ProductCard 
+                        key={product.id} 
+                        product={product} 
+                        index={i} 
+                        quantity={selectedItems[product.id] || 0}
+                        onAdd={() => handleAdd(product.id)}
+                        onRemove={() => handleRemove(product.id)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+            <AnimatePresence mode="popLayout">
+              {filteredProducts.slice(0, visibleCount).map((product, i) => (
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                index={i} 
+                quantity={selectedItems[product.id] || 0}
+                onAdd={() => handleAdd(product.id)}
+                onRemove={() => handleRemove(product.id)}
+              />
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
 
         {filteredProducts.length > visibleCount && (
           <div className="flex justify-center mt-12 pb-4">
