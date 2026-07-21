@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-export const API_URL = `${BASE_URL}/api`;
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -10,7 +9,11 @@ const api = axios.create({
 export const getImageUrl = (url: string | undefined | null) => {
   if (!url) return '';
   if (url.startsWith('http')) return url;
-  return `${BASE_URL}${url}`;
+  
+  // If API_URL is "/api", images should load from "/"
+  // If API_URL is "http://localhost:5000/api", images should load from "http://localhost:5000"
+  let host = API_URL.replace(/\/api$/, '');
+  return `${host}${url}`;
 };
 
 api.interceptors.request.use((config) => {
