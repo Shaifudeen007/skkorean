@@ -316,7 +316,11 @@ const AdminProducts = () => {
                       <div className="flex flex-col items-center pointer-events-none">
                         <Upload className="w-8 h-8 mb-3 text-primary/50 group-hover:text-primary transition-colors" />
                         <span className="font-medium">Click to upload image</span>
-                        <span className="text-xs mt-1 text-foreground/40">PNG, JPG, WEBP up to 5MB</span>
+                        <div className="text-xs mt-2 text-foreground/40 text-center space-y-0.5">
+                          <p>Max size: 5 MB</p>
+                          <p>Recommended: 1200x1200 px</p>
+                          <p>Formats: JPG, PNG, WEBP</p>
+                        </div>
                       </div>
                     )}
                   </div>

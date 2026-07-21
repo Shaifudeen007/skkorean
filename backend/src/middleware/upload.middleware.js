@@ -22,7 +22,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const uploadProduct = multer({ storage: createStorage("products"), fileFilter, limits: { fileSize: 5 * 1024 * 1024 } });
-const uploadGallery = multer({ storage: createStorage("gallery"), fileFilter, limits: { fileSize: 5 * 1024 * 1024 } });
+const uploadGallery = multer({ storage: createStorage("gallery"), fileFilter, limits: { fileSize: 8 * 1024 * 1024 } });
 
 // Keep default export for backwards compatibility
 const upload = uploadProduct;
