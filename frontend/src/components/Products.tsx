@@ -113,11 +113,12 @@ const Products = () => {
         setLoading(true);
         setError(null);
         const { data } = await api.get('/products');
-        setProductsData(data);
+        const productsList = Array.isArray(data) ? data : (data?.products || data?.data || []);
+        setProductsData(productsList);
         
         // Extract unique categories from products
         const uniqueCategories = new Set<string>();
-        data.forEach((p: any) => {
+        productsList.forEach((p: any) => {
           const catName = p.category?.name || p.category;
           if (catName && typeof catName === 'string') {
             uniqueCategories.add(catName);
@@ -126,6 +127,7 @@ const Products = () => {
         setCategories(["All", ...Array.from(uniqueCategories)]);
       } catch (err) {
         setError('Failed to load products. Please try again later.');
+        setProductsData([]);
       } finally {
         setLoading(false);
       }
@@ -149,8 +151,10 @@ const Products = () => {
     });
   };
 
+  const safeProductsData = Array.isArray(productsData) ? productsData : [];
+
   const handleWhatsAppCheckout = () => {
-    const selectedProducts = productsData.filter(p => selectedItems[p._id || p.id]);
+    const selectedProducts = safeProductsData.filter(p => selectedItems[p._id || p.id]);
     const message = `Hello SK Korean Technologies! I am interested in exploring pricing and details for the following machines:\n\n` + 
                     selectedProducts.map((p, i) => `${i + 1}. ${p.name} (Qty: ${selectedItems[p._id || p.id]})`).join('\n') + 
                     `\n\nPlease provide me with more information.`;
@@ -159,7 +163,7 @@ const Products = () => {
     window.open(`https://wa.me/918610345830?text=${encodedMessage}`, '_blank');
   };
 
-  const filteredProducts = productsData.filter(p => {
+  const filteredProducts = safeProductsData.filter(p => {
     const productCategoryName = p.category?.name || p.category || '';
     const productName = p.name || '';
     const productDesc = p.description || '';

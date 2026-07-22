@@ -23,15 +23,19 @@ const Dashboard = () => {
           api.get('/gallery')
         ]);
         
-        const categories = categoriesRes.data || [];
-        const products = productsRes.data || [];
-        const gallery = galleryRes.data || [];
+        const categoriesData = categoriesRes.data;
+        const productsData = productsRes.data;
+        const galleryData = galleryRes.data;
+
+        const categories = Array.isArray(categoriesData) ? categoriesData : (categoriesData?.categories || categoriesData?.data || []);
+        const products = Array.isArray(productsData) ? productsData : (productsData?.products || productsData?.data || []);
+        const gallery = Array.isArray(galleryData) ? galleryData : (galleryData?.gallery || galleryData?.data || []);
 
         setStats({
           totalCategories: categories.length,
           totalProducts: products.length,
           totalGalleryImages: gallery.length,
-          recentProducts: products.slice(0, 5), // Assuming backend returns newest first or we just take first 5
+          recentProducts: products.slice(0, 5),
           recentUploads: gallery.slice(0, 5)
         });
       } catch (error) {

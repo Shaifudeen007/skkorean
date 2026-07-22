@@ -46,9 +46,11 @@ const AdminProducts = () => {
     try {
       setLoading(true);
       const { data } = await api.get('/products');
-      setProducts(data);
+      const list = Array.isArray(data) ? data : (data?.products || data?.data || []);
+      setProducts(list);
     } catch (error) {
       toast.error('Failed to fetch products');
+      setProducts([]);
     } finally {
       setLoading(false);
     }
