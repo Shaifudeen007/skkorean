@@ -10,7 +10,10 @@ import {
   FileText, 
   Sparkles, 
   ListOrdered, 
-  Shield 
+  Shield,
+  Award,
+  Clock,
+  Sparkle
 } from 'lucide-react';
 import api, { getImageUrl } from '../services/api';
 import type { Product } from '../types/product';
@@ -38,20 +41,27 @@ const ProductDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen pt-32 pb-20 flex items-center justify-center text-foreground font-semibold">
-        Loading product details...
+        <div className="flex items-center gap-3 bg-card/80 px-6 py-4 rounded-full border border-border shadow-xl backdrop-blur-md">
+          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <span>Loading product details...</span>
+        </div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center text-center">
-        <h2 className="text-3xl font-bold mb-4 text-foreground">Product Not Found</h2>
+      <div className="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center text-center px-4">
+        <div className="p-4 rounded-full bg-primary/10 text-primary mb-4">
+          <Zap className="w-10 h-10" />
+        </div>
+        <h2 className="text-3xl font-bold mb-2 text-foreground">Product Not Found</h2>
+        <p className="text-foreground/60 mb-6 max-w-sm">The product you are looking for does not exist or has been removed.</p>
         <button 
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors font-medium"
+          onClick={() => navigate('/#products')}
+          className="flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
         >
-          <ArrowLeft className="w-5 h-5" /> Back
+          <ArrowLeft className="w-5 h-5" /> Back to Catalog
         </button>
       </div>
     );
@@ -80,226 +90,319 @@ const ProductDetail = () => {
     : (product.category || 'Uncategorized');
 
   return (
-    <div className="pt-24 pb-20 min-h-screen">
+    <div className="pt-24 pb-20 min-h-screen relative overflow-hidden">
+      {/* Background Decorative Ambient Lighting */}
+      <div className="absolute top-20 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[140px] pointer-events-none -z-10" />
+      <div className="absolute bottom-20 left-10 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Back Button */}
-        <button 
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors mb-8 group"
-        >
-          <div className="p-2 rounded-full bg-border/50 group-hover:bg-primary/10 transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-          </div>
-          <span className="font-medium">Back to Products</span>
-        </button>
-
-        {/* Top Product Hero Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start mb-16">
-          {/* Image Section */}
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-            className="relative w-full aspect-square sm:aspect-[4/3] lg:aspect-[4/5] rounded-3xl overflow-hidden bg-primary/5 border border-border/50 shadow-2xl lg:sticky lg:top-32"
+        {/* Back Navigation Bar */}
+        <div className="flex items-center justify-between mb-8">
+          <button 
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2.5 text-foreground/70 hover:text-primary transition-all group font-medium text-sm sm:text-base"
           >
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent z-10 pointer-events-none" />
-            <img 
-              src={product.image ? getImageUrl(product.image) : "https://via.placeholder.com/600x600?text=No+Image"} 
-              alt={product.name} 
-              className="w-full h-full object-cover rounded-3xl mix-blend-screen"
-            />
+            <div className="p-2 rounded-full bg-card border border-border/60 group-hover:border-primary/50 group-hover:bg-primary/10 transition-all shadow-sm">
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-0.5 transition-transform" />
+            </div>
+            <span>Back to Machinery Catalog</span>
+          </button>
+
+          <span className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-card border border-border/60 text-xs font-semibold text-foreground/70 shadow-sm">
+            <Award className="w-3.5 h-3.5 text-primary" /> Authentic Korean Aesthetic Tech
+          </span>
+        </div>
+
+        {/* Hero Section: Grid layout optimized so Image is proportioned & space is utilized */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-14">
+          
+          {/* Image Showcase Panel (5 Cols on Desktop) */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-5 relative group"
+          >
+            <div className="relative w-full max-h-[440px] aspect-[4/3] sm:aspect-square rounded-3xl overflow-hidden bg-gradient-to-b from-card to-background border border-border/70 shadow-2xl flex items-center justify-center p-4">
+              
+              {/* Studio Glow Ring */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/15 via-transparent to-primary/10 opacity-70 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              
+              <img 
+                src={product.image ? getImageUrl(product.image) : "https://via.placeholder.com/600x600?text=No+Image"} 
+                alt={product.name} 
+                className="max-h-[380px] w-auto max-w-full object-contain mix-blend-screen group-hover:scale-105 transition-transform duration-700 ease-out"
+              />
+
+              {/* Floating Quality Badge */}
+              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center bg-card/90 backdrop-blur-md border border-border/60 rounded-2xl px-4 py-2.5 shadow-lg pointer-events-none">
+                <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                  <Sparkle className="w-3.5 h-3.5 text-primary fill-primary" /> Premium Clinical Grade
+                </span>
+                <span className="text-[11px] font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
+                  SK Certified
+                </span>
+              </div>
+            </div>
           </motion.div>
 
-          {/* Product Basic Info Section */}
+          {/* Product Header & Action Panel (7 Cols on Desktop) */}
           <motion.div 
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="flex flex-col space-y-6"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="lg:col-span-7 flex flex-col justify-between bg-card/60 backdrop-blur-xl border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl relative"
           >
             <div>
-              <div className="mb-3 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                <Zap className="w-4 h-4" /> {categoryName}
+              {/* Category Pill & ID */}
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/15 text-primary text-xs sm:text-sm font-bold tracking-wide border border-primary/20">
+                  <Zap className="w-3.5 h-3.5 fill-primary" /> {categoryName}
+                </span>
+                <span className="text-xs text-foreground/40 font-mono">
+                  REF: SK-KOR-{(product.id || product._id || '00').toString().padStart(3, '0')}
+                </span>
               </div>
-              
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold tracking-tight text-foreground">
+
+              {/* Product Title */}
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold tracking-tight text-foreground leading-tight mb-4">
                 {product.name}
               </h1>
-            </div>
-            
-            {(product.discountPrice || product.mrp || product.price) && (
-              <div className="flex items-center gap-4">
-                {(product.mrp || product.originalPrice) && (
-                  <span className="text-xl sm:text-2xl text-foreground/50 line-through font-outfit">
-                    ₹{product.mrp || product.originalPrice}
+
+              {/* Price Banner */}
+              <div className="flex items-baseline gap-4 mb-6 pb-6 border-b border-border/50">
+                {(product.discountPrice || product.price) ? (
+                  <>
+                    <span className="text-3xl sm:text-4xl font-outfit font-extrabold text-primary">
+                      ₹{product.discountPrice || product.price}
+                    </span>
+                    {(product.mrp || product.originalPrice) && (
+                      <span className="text-lg sm:text-xl text-foreground/40 line-through font-outfit">
+                        ₹{product.mrp || product.originalPrice}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className="text-xl sm:text-2xl font-outfit font-bold text-primary tracking-wider uppercase bg-primary/10 px-4 py-1.5 rounded-xl border border-primary/20">
+                    Enquire for Price & Demo
                   </span>
                 )}
-                {(product.discountPrice || product.price) && (
-                  <span className="text-3xl sm:text-4xl font-outfit font-bold text-primary">
-                    ₹{product.discountPrice || product.price}
-                  </span>
+              </div>
+
+              {/* High Level Quick Highlights */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+                <div className="p-3.5 rounded-2xl bg-background/50 border border-border/50 flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">
+                    <Shield className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">Warranty</span>
+                    <span className="text-[11px] text-foreground/60">Full Tech Support</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-background/50 border border-border/50 flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">
+                    <CheckCircle2 className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">Safety</span>
+                    <span className="text-[11px] text-foreground/60">Clinical Precision</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-background/50 border border-border/50 flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-foreground">Delivery</span>
+                    <span className="text-[11px] text-foreground/60">Pan India Shipping</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <button 
+                onClick={handleWhatsAppEnquiry}
+                className="flex-1 flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#25D366] text-white font-bold hover:bg-[#20bd5a] transition-all shadow-xl shadow-[#25D366]/25 hover:shadow-[#25D366]/40 hover:-translate-y-0.5 active:translate-y-0 text-base"
+              >
+                <MessageCircle className="w-5 h-5 fill-current" />
+                <span>Enquire via WhatsApp</span>
+              </button>
+            </div>
+
+          </motion.div>
+        </div>
+
+        {/* Detailed Sections Grid: 2-Column Responsive Grid on Desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+          {/* LEFT COLUMN: Description & Procedure */}
+          <div className="space-y-8">
+            
+            {/* Description Card */}
+            {product.description && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 relative overflow-hidden"
+              >
+                <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary via-primary/50 to-transparent" />
+                <h2 className="text-2xl font-bold font-serif text-foreground mb-4 flex items-center gap-3 pb-3 border-b border-border/40">
+                  <FileText className="w-6 h-6 text-primary shrink-0" />
+                  <span>Overview & Description</span>
+                </h2>
+                <div className="text-base sm:text-lg text-foreground/80 leading-relaxed space-y-4">
+                  {product.description.split('\n').filter(line => line.trim() !== '').map((paragraph, i) => (
+                    <p key={i} className="first-letter:text-2xl first-letter:font-serif first-letter:font-bold first-letter:text-primary">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Procedure Timeline Card */}
+            {procedureList.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300"
+              >
+                <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40">
+                  <ListOrdered className="w-6 h-6 text-primary shrink-0" />
+                  <span>Treatment Procedure</span>
+                </h2>
+                <div className="relative pl-6 space-y-6 before:absolute before:left-[15px] before:top-3 before:bottom-3 before:w-[2px] before:bg-gradient-to-b before:from-primary before:via-primary/40 before:to-border">
+                  {procedureList.map((step, index) => (
+                    <div 
+                      key={index}
+                      className="relative flex items-start gap-4 p-4 rounded-2xl bg-background/60 border border-border/40 hover:border-primary/40 transition-all duration-300 group shadow-sm"
+                    >
+                      <div className="absolute -left-[27px] top-4 flex items-center justify-center w-7 h-7 rounded-full bg-primary text-primary-foreground font-bold text-xs ring-4 ring-card shadow-md shadow-primary/30 group-hover:scale-110 transition-transform">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1 pl-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-primary block mb-0.5">
+                          Step {index + 1}
+                        </span>
+                        <span className="text-foreground/90 font-medium text-base sm:text-lg block leading-snug">
+                          {step}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+          </div>
+
+          {/* RIGHT COLUMN: Key Features & Why Choose Us */}
+          <div className="space-y-8">
+
+            {/* Key Features Card */}
+            {keyFeaturesList.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300"
+              >
+                <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40">
+                  <Sparkles className="w-6 h-6 text-primary shrink-0" />
+                  <span>Key Features</span>
+                </h2>
+                <div className="space-y-3">
+                  {keyFeaturesList.map((feature, index) => (
+                    <div 
+                      key={index}
+                      className="flex items-start gap-3.5 p-4 rounded-2xl bg-background/60 border border-border/40 hover:border-primary/40 transition-all duration-300 group shadow-sm"
+                    >
+                      <div className="w-2.5 h-2.5 rounded-full bg-primary shrink-0 mt-2 shadow-[0_0_8px_rgba(212,175,55,0.8)] group-hover:scale-125 transition-transform" />
+                      <span className="text-foreground/90 font-medium text-base sm:text-lg leading-snug">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Why Choose Us Card */}
+            {whyChooseUsList.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300"
+              >
+                <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40">
+                  <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
+                  <span>Why Choose Us</span>
+                </h2>
+                <div className="space-y-3">
+                  {whyChooseUsList.map((reason, index) => (
+                    <div 
+                      key={index}
+                      className="flex items-start gap-3.5 p-4 rounded-2xl bg-background/60 border border-border/40 hover:border-primary/40 transition-all duration-300 group shadow-sm"
+                    >
+                      <div className="p-1 rounded-full bg-primary/15 text-primary shrink-0 mt-0.5 group-hover:bg-primary group-hover:text-primary-foreground transition-colors shadow-sm">
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                      </div>
+                      <span className="text-foreground/90 font-medium text-base sm:text-lg leading-snug">{reason}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Legacy Fallback Support */}
+            {(!product.keyFeatures && !product.whyChooseUs && !product.procedure && product.longDescription) && (
+              <div className="space-y-6">
+                {product.longDescription.keyBenefits && product.longDescription.keyBenefits.length > 0 && (
+                  <div className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl">
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground"><CheckCircle2 className="w-5 h-5 text-primary" /> Key Benefits</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {product.longDescription.keyBenefits.map((benefit: string, idx: number) => (
+                        <span key={idx} className="px-3.5 py-1.5 rounded-full bg-background border border-border/50 text-sm font-medium text-foreground/90">{benefit}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {product.longDescription.specifications && product.longDescription.specifications.length > 0 && (
+                  <div className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl">
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground"><Shield className="w-5 h-5 text-primary" /> Technical Specifications</h3>
+                    <div className="rounded-2xl overflow-hidden border border-border/50 bg-background/50">
+                      <table className="w-full text-sm text-left">
+                        <tbody className="divide-y divide-border/50">
+                          {product.longDescription.specifications.map((spec: any, idx: number) => (
+                            <tr key={idx} className="hover:bg-primary/5 transition-colors">
+                              <th className="px-4 py-3 font-semibold text-foreground/90 w-1/3 bg-card">{spec.label}</th>
+                              <td className="px-4 py-3 text-foreground/70">{spec.value}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 )}
               </div>
             )}
 
-            {/* Quick Enquire CTA */}
-            <div className="pt-2">
-              <button 
-                onClick={handleWhatsAppEnquiry}
-                className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#25D366] text-white font-bold hover:bg-[#20bd5a] transition-all shadow-lg shadow-[#25D366]/20 hover:shadow-[#25D366]/40 hover:-translate-y-0.5 active:translate-y-0"
-              >
-                <MessageCircle className="w-5 h-5" />
-                <span>Enquire via WhatsApp</span>
-              </button>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Detailed Professional Sections Stack */}
-        <div className="space-y-8 max-w-5xl mx-auto">
-
-          {/* 1. Description Section */}
-          {product.description && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="bg-card border border-border/60 rounded-xl p-6 sm:p-8 shadow-md hover:shadow-xl hover:border-primary/30 transition-all duration-300"
-            >
-              <h2 className="text-2xl font-bold font-serif text-foreground mb-4 flex items-center gap-3 pb-3 border-b border-border/40">
-                <FileText className="w-6 h-6 text-primary shrink-0" />
-                <span>Description</span>
-              </h2>
-              <div className="text-base sm:text-lg text-foreground/80 leading-relaxed space-y-3">
-                {product.description.split('\n').filter(line => line.trim() !== '').map((paragraph, i) => (
-                  <p key={i}>{paragraph}</p>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* 2. Key Features Section */}
-          {keyFeaturesList.length > 0 && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="bg-card border border-border/60 rounded-xl p-6 sm:p-8 shadow-md hover:shadow-xl hover:border-primary/30 transition-all duration-300"
-            >
-              <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40">
-                <Sparkles className="w-6 h-6 text-primary shrink-0" />
-                <span>Key Features</span>
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                {keyFeaturesList.map((feature, index) => (
-                  <div 
-                    key={index}
-                    className="flex items-start gap-3 p-4 rounded-xl bg-background/50 border border-border/40 hover:border-primary/30 transition-all group"
-                  >
-                    <span className="text-primary font-bold text-xl leading-none mt-0.5 group-hover:scale-125 transition-transform shrink-0">•</span>
-                    <span className="text-foreground/90 font-medium text-base sm:text-lg">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* 3. Why Choose Us Section */}
-          {whyChooseUsList.length > 0 && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="bg-card border border-border/60 rounded-xl p-6 sm:p-8 shadow-md hover:shadow-xl hover:border-primary/30 transition-all duration-300"
-            >
-              <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40">
-                <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
-                <span>Why Choose Us</span>
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                {whyChooseUsList.map((reason, index) => (
-                  <div 
-                    key={index}
-                    className="flex items-center gap-3.5 p-4 rounded-xl bg-background/50 border border-border/40 hover:border-primary/30 transition-all group"
-                  >
-                    <div className="p-1 rounded-full bg-primary/10 text-primary shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <Check className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
-                    </div>
-                    <span className="text-foreground/90 font-medium text-base sm:text-lg">{reason}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* 4. Procedure Section */}
-          {procedureList.length > 0 && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="bg-card border border-border/60 rounded-xl p-6 sm:p-8 shadow-md hover:shadow-xl hover:border-primary/30 transition-all duration-300"
-            >
-              <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40">
-                <ListOrdered className="w-6 h-6 text-primary shrink-0" />
-                <span>Procedure</span>
-              </h2>
-              <div className="space-y-4">
-                {procedureList.map((step, index) => (
-                  <div 
-                    key={index}
-                    className="flex items-start gap-4 p-4 rounded-xl bg-background/50 border border-border/40 hover:border-primary/30 transition-all group"
-                  >
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold text-sm shrink-0 shadow-md shadow-primary/20 group-hover:scale-110 transition-transform">
-                      {index + 1}
-                    </div>
-                    <span className="text-foreground/90 font-medium text-base sm:text-lg pt-0.5">{step}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Fallback for products with legacy longDescription when new fields are empty */}
-          {(!product.keyFeatures && !product.whyChooseUs && !product.procedure && product.longDescription) && (
-            <div className="space-y-6">
-              {product.longDescription.keyBenefits && product.longDescription.keyBenefits.length > 0 && (
-                <div className="bg-card border border-border/60 rounded-xl p-6 sm:p-8 shadow-md">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground"><CheckCircle2 className="w-5 h-5 text-primary" /> Key Benefits</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.longDescription.keyBenefits.map((benefit: string, idx: number) => (
-                      <span key={idx} className="px-3 py-1.5 rounded-full bg-background border border-border/50 text-sm text-foreground/90">{benefit}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {product.longDescription.specifications && product.longDescription.specifications.length > 0 && (
-                <div className="bg-card border border-border/60 rounded-xl p-6 sm:p-8 shadow-md">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground"><Shield className="w-5 h-5 text-primary" /> Technical Specifications</h3>
-                  <div className="rounded-xl overflow-hidden border border-border/50 bg-background/50">
-                    <table className="w-full text-sm text-left">
-                      <tbody className="divide-y divide-border/50">
-                        {product.longDescription.specifications.map((spec: any, idx: number) => (
-                          <tr key={idx} className="hover:bg-primary/5 transition-colors">
-                            <th className="px-4 py-3 font-semibold text-foreground/90 w-1/3 bg-card">{spec.label}</th>
-                            <td className="px-4 py-3 text-foreground/70">{spec.value}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+          </div>
 
         </div>
+
       </div>
     </div>
   );
