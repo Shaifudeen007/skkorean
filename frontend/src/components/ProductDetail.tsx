@@ -114,7 +114,7 @@ const ProductDetail = () => {
           </span>
         </div>
 
-        {/* Hero Section: Grid layout optimized so Image is proportioned & space is utilized */}
+        {/* Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-14">
           
           {/* Image Showcase Panel (5 Cols on Desktop) */}
@@ -155,7 +155,7 @@ const ProductDetail = () => {
             className="lg:col-span-7 flex flex-col justify-between bg-card/60 backdrop-blur-xl border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl relative"
           >
             <div>
-              {/* Category Pill (ID Removed) */}
+              {/* Category Pill */}
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/15 text-primary text-xs sm:text-sm font-bold tracking-wide border border-primary/20">
                   <Zap className="w-3.5 h-3.5 fill-primary" /> {categoryName}
@@ -235,7 +235,7 @@ const ProductDetail = () => {
           </motion.div>
         </div>
 
-        {/* Detailed Sections Grid: 4 EQUAL BOXES in 2x2 Grid Layout */}
+        {/* Detailed Sections Grid: 4 EQUAL GLOWING BOXES in 2x2 Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
             
           {/* BOX 1: Description Card */}
@@ -244,12 +244,11 @@ const ProductDetail = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-card border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col h-full relative overflow-hidden"
+            className="bg-card border-2 border-primary/40 rounded-[1.5rem] p-6 sm:p-8 shadow-[0_0_25px_rgba(212,175,55,0.2)] hover:border-primary hover:shadow-[0_0_40px_rgba(212,175,55,0.45)] transition-all duration-300 flex flex-col h-full min-h-[280px] sm:min-h-[300px] backdrop-blur-xl"
           >
-            <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary via-primary/50 to-transparent" />
             <h2 className="text-2xl font-bold font-serif text-foreground mb-4 flex items-center gap-3 pb-3 border-b border-border/40 shrink-0">
               <FileText className="w-6 h-6 text-primary shrink-0" />
-              <span>Overview & Description</span>
+              <span>Description</span>
             </h2>
             <div className="text-base sm:text-lg text-foreground/80 leading-relaxed space-y-4 flex-grow">
               {product.description ? (
@@ -270,7 +269,7 @@ const ProductDetail = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-card border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col h-full"
+            className="bg-card border-2 border-primary/40 rounded-[1.5rem] p-6 sm:p-8 shadow-[0_0_25px_rgba(212,175,55,0.2)] hover:border-primary hover:shadow-[0_0_40px_rgba(212,175,55,0.45)] transition-all duration-300 flex flex-col h-full min-h-[280px] sm:min-h-[300px] backdrop-blur-xl"
           >
             <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40 shrink-0">
               <Sparkles className="w-6 h-6 text-primary shrink-0" />
@@ -293,17 +292,17 @@ const ProductDetail = () => {
             </div>
           </motion.div>
 
-          {/* BOX 3: Treatment Procedure Timeline Card */}
+          {/* BOX 3: Procedure Card */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-card border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col h-full"
+            className="bg-card border-2 border-primary/40 rounded-[1.5rem] p-6 sm:p-8 shadow-[0_0_25px_rgba(212,175,55,0.2)] hover:border-primary hover:shadow-[0_0_40px_rgba(212,175,55,0.45)] transition-all duration-300 flex flex-col h-full min-h-[280px] sm:min-h-[300px] backdrop-blur-xl"
           >
             <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40 shrink-0">
               <ListOrdered className="w-6 h-6 text-primary shrink-0" />
-              <span>Treatment Procedure</span>
+              <span>Procedure</span>
             </h2>
             <div className="flex-grow">
               {procedureList.length > 0 ? (
@@ -339,7 +338,7 @@ const ProductDetail = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="bg-card border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col h-full"
+            className="bg-card border-2 border-primary/40 rounded-[1.5rem] p-6 sm:p-8 shadow-[0_0_25px_rgba(212,175,55,0.2)] hover:border-primary hover:shadow-[0_0_40px_rgba(212,175,55,0.45)] transition-all duration-300 flex flex-col h-full min-h-[280px] sm:min-h-[300px] backdrop-blur-xl"
           >
             <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40 shrink-0">
               <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
