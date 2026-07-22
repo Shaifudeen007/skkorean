@@ -127,8 +127,8 @@ const ContactUs = () => {
 
               <div className="flex flex-col gap-2">
                 <label htmlFor="machine" className="text-sm font-medium text-foreground/80 pl-1">Interested Machinery</label>
-                <select id="machine" className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all appearance-none">
-                  <option value="" disabled selected>Select an option...</option>
+                <select id="machine" defaultValue="" className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all appearance-none">
+                  <option value="" disabled>Select an option...</option>
                   <option value="laser">Premium Laser Systems</option>
                   <option value="anti-aging">Anti-Aging Devices</option>
                   <option value="body-contour">Body Contouring Machines</option>

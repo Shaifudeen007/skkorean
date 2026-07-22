@@ -11,8 +11,10 @@ const Portfolio = () => {
     const fetchGallery = async () => {
       try {
         const { data } = await api.get('/gallery');
-        setProjects(data);
+        const list = Array.isArray(data) ? data : (data?.gallery || data?.data || []);
+        setProjects(list);
       } catch (error) {
+        setProjects([]);
       } finally {
         setLoading(false);
       }
@@ -20,8 +22,7 @@ const Portfolio = () => {
     fetchGallery();
   }, []);
 
-  if (loading) return null;
-  if (projects.length === 0) return null;
+  if (loading || !Array.isArray(projects) || projects.length === 0) return null;
 
   return (
     <section id="portfolio" className="pt-20 pb-8 relative overflow-hidden scroll-mt-20">

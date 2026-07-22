@@ -24,9 +24,11 @@ const AdminGallery = () => {
     try {
       setLoading(true);
       const { data } = await api.get('/gallery');
-      setItems(data);
+      const list = Array.isArray(data) ? data : (data?.gallery || data?.data || []);
+      setItems(list);
     } catch (error) {
       toast.error('Failed to fetch gallery');
+      setItems([]);
     } finally {
       setLoading(false);
     }
