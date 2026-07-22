@@ -100,7 +100,7 @@ const ProductDetail = () => {
         {/* Back Navigation Bar */}
         <div className="flex items-center justify-between mb-8">
           <button 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/#products')}
             className="inline-flex items-center gap-2.5 text-foreground/70 hover:text-primary transition-all group font-medium text-sm sm:text-base"
           >
             <div className="p-2 rounded-full bg-card border border-border/60 group-hover:border-primary/50 group-hover:bg-primary/10 transition-all shadow-sm">
