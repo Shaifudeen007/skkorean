@@ -124,7 +124,7 @@ const ProductDetail = () => {
             transition={{ duration: 0.6 }}
             className="lg:col-span-5 relative group"
           >
-            <div className="relative w-full max-h-[440px] aspect-[4/3] sm:aspect-square rounded-[1.5rem] overflow-hidden bg-gradient-to-b from-card to-background border border-border/70 shadow-2xl flex items-center justify-center p-4">
+            <div className="relative w-full min-h-[340px] sm:min-h-[400px] lg:max-h-[460px] aspect-square rounded-[1.5rem] overflow-hidden bg-gradient-to-b from-card to-background border border-border/70 shadow-2xl flex items-center justify-center p-3 sm:p-4">
               
               {/* Studio Glow Ring */}
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/15 via-transparent to-primary/10 opacity-70 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -132,7 +132,7 @@ const ProductDetail = () => {
               <img 
                 src={product.image ? getImageUrl(product.image) : "https://via.placeholder.com/600x600?text=No+Image"} 
                 alt={product.name} 
-                className="max-h-[380px] w-auto max-w-full object-contain mix-blend-screen group-hover:scale-105 transition-transform duration-700 ease-out"
+                className="w-full h-full max-h-[320px] sm:max-h-[380px] object-contain dark:mix-blend-screen group-hover:scale-105 transition-transform duration-700 ease-out"
               />
 
               {/* Floating Quality Badge */}

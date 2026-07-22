@@ -20,7 +20,7 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
       onClick={() => navigate(`/product/${product._id || product.id}`)}
     >
       {/* Inner Image Container with its own Border Radius */}
-      <div className="relative w-full h-[140px] sm:h-[240px] rounded-[1rem] sm:rounded-[1.5rem] overflow-hidden bg-primary/5 mb-3 sm:mb-4">
+      <div className="relative w-full h-[180px] sm:h-[240px] rounded-[1rem] sm:rounded-[1.5rem] overflow-hidden bg-primary/5 mb-3 sm:mb-4">
         <button 
           className={`absolute top-2 right-2 sm:top-3 sm:right-3 z-20 p-2 sm:p-2.5 rounded-full backdrop-blur-md transition-all ${
             isSelected ? 'bg-primary text-primary-foreground' : 'bg-background/50 text-foreground/70 hover:text-primary hover:bg-background'
@@ -36,7 +36,7 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
         <img 
           src={product.image ? getImageUrl(product.image) : "https://via.placeholder.com/400x400?text=No+Image"} 
           alt={product.name} 
-          className="w-full h-full object-cover rounded-[1rem] sm:rounded-[1.5rem] opacity-90 mix-blend-screen group-hover:scale-110 transition-transform duration-700 ease-out" 
+          className="w-full h-full object-cover rounded-[1rem] sm:rounded-[1.5rem] opacity-90 dark:mix-blend-screen group-hover:scale-110 transition-transform duration-700 ease-out" 
         />
       </div>
 
