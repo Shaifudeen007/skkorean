@@ -126,17 +126,6 @@ const ContactUs = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="machine" className="text-sm font-medium text-foreground/80 pl-1">Interested Machinery</label>
-                <select id="machine" defaultValue="" className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all appearance-none">
-                  <option value="" disabled>Select an option...</option>
-                  <option value="laser">Premium Laser Systems</option>
-                  <option value="anti-aging">Anti-Aging Devices</option>
-                  <option value="body-contour">Body Contouring Machines</option>
-                  <option value="general">General Enquiry / Partnership</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-2">
                 <label htmlFor="message" className="text-sm font-medium text-foreground/80 pl-1">Message</label>
                 <textarea id="message" rows={4} placeholder="Tell us about your clinic's needs..." className="w-full bg-background/50 border border-border/50 rounded-xl px-4 py-3 text-foreground placeholder:text-foreground/30 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all resize-none"></textarea>
               </div>

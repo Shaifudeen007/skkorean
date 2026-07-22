@@ -124,7 +124,7 @@ const ProductDetail = () => {
             transition={{ duration: 0.6 }}
             className="lg:col-span-5 relative group"
           >
-            <div className="relative w-full max-h-[440px] aspect-[4/3] sm:aspect-square rounded-3xl overflow-hidden bg-gradient-to-b from-card to-background border border-border/70 shadow-2xl flex items-center justify-center p-4">
+            <div className="relative w-full max-h-[440px] aspect-[4/3] sm:aspect-square rounded-[1.5rem] overflow-hidden bg-gradient-to-b from-card to-background border border-border/70 shadow-2xl flex items-center justify-center p-4">
               
               {/* Studio Glow Ring */}
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/15 via-transparent to-primary/10 opacity-70 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -152,16 +152,13 @@ const ProductDetail = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="lg:col-span-7 flex flex-col justify-between bg-card/60 backdrop-blur-xl border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl relative"
+            className="lg:col-span-7 flex flex-col justify-between bg-card/60 backdrop-blur-xl border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl relative"
           >
             <div>
-              {/* Category Pill & ID */}
+              {/* Category Pill (ID Removed) */}
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/15 text-primary text-xs sm:text-sm font-bold tracking-wide border border-primary/20">
                   <Zap className="w-3.5 h-3.5 fill-primary" /> {categoryName}
-                </span>
-                <span className="text-xs text-foreground/40 font-mono">
-                  REF: SK-KOR-{(product.id || product._id || '00').toString().padStart(3, '0')}
                 </span>
               </div>
 
@@ -238,49 +235,78 @@ const ProductDetail = () => {
           </motion.div>
         </div>
 
-        {/* Detailed Sections Grid: 2-Column Responsive Grid on Desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-
-          {/* LEFT COLUMN: Description & Procedure */}
-          <div className="space-y-8">
+        {/* Detailed Sections Grid: 4 EQUAL BOXES in 2x2 Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
             
-            {/* Description Card */}
-            {product.description && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 relative overflow-hidden"
-              >
-                <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary via-primary/50 to-transparent" />
-                <h2 className="text-2xl font-bold font-serif text-foreground mb-4 flex items-center gap-3 pb-3 border-b border-border/40">
-                  <FileText className="w-6 h-6 text-primary shrink-0" />
-                  <span>Overview & Description</span>
-                </h2>
-                <div className="text-base sm:text-lg text-foreground/80 leading-relaxed space-y-4">
-                  {product.description.split('\n').filter(line => line.trim() !== '').map((paragraph, i) => (
-                    <p key={i} className="first-letter:text-2xl first-letter:font-serif first-letter:font-bold first-letter:text-primary">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </motion.div>
-            )}
+          {/* BOX 1: Description Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-card border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col h-full relative overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary via-primary/50 to-transparent" />
+            <h2 className="text-2xl font-bold font-serif text-foreground mb-4 flex items-center gap-3 pb-3 border-b border-border/40 shrink-0">
+              <FileText className="w-6 h-6 text-primary shrink-0" />
+              <span>Overview & Description</span>
+            </h2>
+            <div className="text-base sm:text-lg text-foreground/80 leading-relaxed space-y-4 flex-grow">
+              {product.description ? (
+                product.description.split('\n').filter(line => line.trim() !== '').map((paragraph, i) => (
+                  <p key={i} className="first-letter:text-2xl first-letter:font-serif first-letter:font-bold first-letter:text-primary">
+                    {paragraph}
+                  </p>
+                ))
+              ) : (
+                <p className="text-foreground/40 italic">No description provided.</p>
+              )}
+            </div>
+          </motion.div>
 
-            {/* Procedure Timeline Card */}
-            {procedureList.length > 0 && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300"
-              >
-                <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40">
-                  <ListOrdered className="w-6 h-6 text-primary shrink-0" />
-                  <span>Treatment Procedure</span>
-                </h2>
+          {/* BOX 2: Key Features Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="bg-card border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col h-full"
+          >
+            <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40 shrink-0">
+              <Sparkles className="w-6 h-6 text-primary shrink-0" />
+              <span>Key Features</span>
+            </h2>
+            <div className="space-y-3 flex-grow">
+              {keyFeaturesList.length > 0 ? (
+                keyFeaturesList.map((feature, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-start gap-3.5 p-4 rounded-2xl bg-background/60 border border-border/40 hover:border-primary/40 transition-all duration-300 group shadow-sm"
+                  >
+                    <div className="w-2.5 h-2.5 rounded-full bg-primary shrink-0 mt-2 shadow-[0_0_8px_rgba(212,175,55,0.8)] group-hover:scale-125 transition-transform" />
+                    <span className="text-foreground/90 font-medium text-base sm:text-lg leading-snug">{feature}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-foreground/40 italic">No key features listed.</p>
+              )}
+            </div>
+          </motion.div>
+
+          {/* BOX 3: Treatment Procedure Timeline Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-card border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col h-full"
+          >
+            <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40 shrink-0">
+              <ListOrdered className="w-6 h-6 text-primary shrink-0" />
+              <span>Treatment Procedure</span>
+            </h2>
+            <div className="flex-grow">
+              {procedureList.length > 0 ? (
                 <div className="relative pl-6 space-y-6 before:absolute before:left-[15px] before:top-3 before:bottom-3 before:w-[2px] before:bg-gradient-to-b before:from-primary before:via-primary/40 before:to-border">
                   {procedureList.map((step, index) => (
                     <div 
@@ -301,105 +327,42 @@ const ProductDetail = () => {
                     </div>
                   ))}
                 </div>
-              </motion.div>
-            )}
+              ) : (
+                <p className="text-foreground/40 italic">No procedure steps listed.</p>
+              )}
+            </div>
+          </motion.div>
 
-          </div>
-
-          {/* RIGHT COLUMN: Key Features & Why Choose Us */}
-          <div className="space-y-8">
-
-            {/* Key Features Card */}
-            {keyFeaturesList.length > 0 && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300"
-              >
-                <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40">
-                  <Sparkles className="w-6 h-6 text-primary shrink-0" />
-                  <span>Key Features</span>
-                </h2>
-                <div className="space-y-3">
-                  {keyFeaturesList.map((feature, index) => (
-                    <div 
-                      key={index}
-                      className="flex items-start gap-3.5 p-4 rounded-2xl bg-background/60 border border-border/40 hover:border-primary/40 transition-all duration-300 group shadow-sm"
-                    >
-                      <div className="w-2.5 h-2.5 rounded-full bg-primary shrink-0 mt-2 shadow-[0_0_8px_rgba(212,175,55,0.8)] group-hover:scale-125 transition-transform" />
-                      <span className="text-foreground/90 font-medium text-base sm:text-lg leading-snug">{feature}</span>
+          {/* BOX 4: Why Choose This ? Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="bg-card border border-border/70 rounded-[1.5rem] p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col h-full"
+          >
+            <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40 shrink-0">
+              <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
+              <span>Why Choose This ?</span>
+            </h2>
+            <div className="space-y-3 flex-grow">
+              {whyChooseUsList.length > 0 ? (
+                whyChooseUsList.map((reason, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-start gap-3.5 p-4 rounded-2xl bg-background/60 border border-border/40 hover:border-primary/40 transition-all duration-300 group shadow-sm"
+                  >
+                    <div className="p-1 rounded-full bg-primary/15 text-primary shrink-0 mt-0.5 group-hover:bg-primary group-hover:text-primary-foreground transition-colors shadow-sm">
+                      <Check className="w-4 h-4 stroke-[2.5]" />
                     </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Why Choose Us Card */}
-            {whyChooseUsList.length > 0 && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl hover:border-primary/40 transition-all duration-300"
-              >
-                <h2 className="text-2xl font-bold font-serif text-foreground mb-6 flex items-center gap-3 pb-3 border-b border-border/40">
-                  <CheckCircle2 className="w-6 h-6 text-primary shrink-0" />
-                  <span>Why Choose Us</span>
-                </h2>
-                <div className="space-y-3">
-                  {whyChooseUsList.map((reason, index) => (
-                    <div 
-                      key={index}
-                      className="flex items-start gap-3.5 p-4 rounded-2xl bg-background/60 border border-border/40 hover:border-primary/40 transition-all duration-300 group shadow-sm"
-                    >
-                      <div className="p-1 rounded-full bg-primary/15 text-primary shrink-0 mt-0.5 group-hover:bg-primary group-hover:text-primary-foreground transition-colors shadow-sm">
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                      </div>
-                      <span className="text-foreground/90 font-medium text-base sm:text-lg leading-snug">{reason}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Legacy Fallback Support */}
-            {(!product.keyFeatures && !product.whyChooseUs && !product.procedure && product.longDescription) && (
-              <div className="space-y-6">
-                {product.longDescription.keyBenefits && product.longDescription.keyBenefits.length > 0 && (
-                  <div className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl">
-                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground"><CheckCircle2 className="w-5 h-5 text-primary" /> Key Benefits</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {product.longDescription.keyBenefits.map((benefit: string, idx: number) => (
-                        <span key={idx} className="px-3.5 py-1.5 rounded-full bg-background border border-border/50 text-sm font-medium text-foreground/90">{benefit}</span>
-                      ))}
-                    </div>
+                    <span className="text-foreground/90 font-medium text-base sm:text-lg leading-snug">{reason}</span>
                   </div>
-                )}
-
-                {product.longDescription.specifications && product.longDescription.specifications.length > 0 && (
-                  <div className="bg-card border border-border/70 rounded-3xl p-6 sm:p-8 shadow-xl">
-                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground"><Shield className="w-5 h-5 text-primary" /> Technical Specifications</h3>
-                    <div className="rounded-2xl overflow-hidden border border-border/50 bg-background/50">
-                      <table className="w-full text-sm text-left">
-                        <tbody className="divide-y divide-border/50">
-                          {product.longDescription.specifications.map((spec: any, idx: number) => (
-                            <tr key={idx} className="hover:bg-primary/5 transition-colors">
-                              <th className="px-4 py-3 font-semibold text-foreground/90 w-1/3 bg-card">{spec.label}</th>
-                              <td className="px-4 py-3 text-foreground/70">{spec.value}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-          </div>
+                ))
+              ) : (
+                <p className="text-foreground/40 italic">No features listed for Why Choose This.</p>
+              )}
+            </div>
+          </motion.div>
 
         </div>
 
