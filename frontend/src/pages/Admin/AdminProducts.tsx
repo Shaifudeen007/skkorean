@@ -24,8 +24,11 @@ const AdminProducts = () => {
     mrp: '',
     discountPrice: '',
     description: '',
+    keyFeatures: '',
+    whyChooseUs: '',
+    procedure: '',
   });
-  
+
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -77,6 +80,9 @@ const AdminProducts = () => {
       mrp: product.mrp || product.originalPrice || '',
       discountPrice: product.discountPrice || product.price || '',
       description: product.description || '',
+      keyFeatures: product.keyFeatures || '',
+      whyChooseUs: product.whyChooseUs || '',
+      procedure: product.procedure || '',
     });
     
     // Set image preview if exists
@@ -122,6 +128,9 @@ const AdminProducts = () => {
       if (formData.mrp) data.append('mrp', formData.mrp);
       if (formData.discountPrice) data.append('discountPrice', formData.discountPrice);
       data.append('description', formData.description);
+      data.append('keyFeatures', formData.keyFeatures);
+      data.append('whyChooseUs', formData.whyChooseUs);
+      data.append('procedure', formData.procedure);
       if (imageFile) {
         data.append('image', imageFile);
       }
@@ -150,7 +159,16 @@ const AdminProducts = () => {
   const resetForm = () => {
     setShowForm(false);
     setEditId(null);
-    setFormData({ name: '', categoryId: '', mrp: '', discountPrice: '', description: '' });
+    setFormData({
+      name: '',
+      categoryId: '',
+      mrp: '',
+      discountPrice: '',
+      description: '',
+      keyFeatures: '',
+      whyChooseUs: '',
+      procedure: '',
+    });
     setImageFile(null);
     setImagePreview(null);
   };
@@ -324,6 +342,44 @@ const AdminProducts = () => {
                       </div>
                     )}
                   </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-foreground/80 mb-2">Key Features</label>
+                  <textarea 
+                    name="keyFeatures"
+                    value={formData.keyFeatures}
+                    onChange={handleInputChange}
+                    rows={5}
+                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-y"
+                    placeholder="Enter each feature on a new line..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground/80 mb-2">Why Choose Us</label>
+                  <textarea 
+                    name="whyChooseUs"
+                    value={formData.whyChooseUs}
+                    onChange={handleInputChange}
+                    rows={5}
+                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-y"
+                    placeholder="Enter each reason on a new line..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground/80 mb-2">Procedure</label>
+                  <textarea 
+                    name="procedure"
+                    value={formData.procedure}
+                    onChange={handleInputChange}
+                    rows={5}
+                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-y"
+                    placeholder="Enter each procedure step on a new line..."
+                  />
                 </div>
               </div>
 
