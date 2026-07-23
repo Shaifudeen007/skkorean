@@ -139,17 +139,27 @@ const Products = () => {
           api.get('/main-categories')
         ]);
 
-        const productsList = Array.isArray(productsRes.data) 
-          ? productsRes.data 
-          : (productsRes.data?.products || productsRes.data?.data || []);
+        const rawProductsData = productsRes.data;
+        const productsList = Array.isArray(rawProductsData) 
+          ? rawProductsData 
+          : (Array.isArray(rawProductsData?.products) ? rawProductsData.products : (Array.isArray(rawProductsData?.data) ? rawProductsData.data : []));
         
-        const mainList = mainCatsRes.data?.data || mainCatsRes.data || [];
+        const rawMainData = mainCatsRes.data;
+        let mainList: any[] = [];
+        if (Array.isArray(rawMainData)) {
+          mainList = rawMainData;
+        } else if (Array.isArray(rawMainData?.data)) {
+          mainList = rawMainData.data;
+        } else if (Array.isArray(rawMainData?.mainCategories)) {
+          mainList = rawMainData.mainCategories;
+        }
 
         setProductsData(productsList);
         setMainCategories(mainList);
       } catch (err) {
         setError('Failed to load products catalog. Please try again later.');
         setProductsData([]);
+        setMainCategories([]);
       } finally {
         setLoading(false);
       }
@@ -157,11 +167,14 @@ const Products = () => {
     fetchData();
   }, []);
 
+  const safeProductsData = useMemo(() => Array.isArray(productsData) ? productsData : [], [productsData]);
+  const safeMainCategories = useMemo(() => Array.isArray(mainCategories) ? mainCategories : [], [mainCategories]);
+
   // Compute available Sub Categories under current active Main Category
   const subCategoriesList = useMemo(() => {
     const subSet = new Set<string>();
     
-    productsData.forEach((p: any) => {
+    safeProductsData.forEach((p: any) => {
       const pMain = p.category?.mainCategory?.name;
       const pSub = p.category?.name || p.category;
 
@@ -173,7 +186,7 @@ const Products = () => {
     });
 
     return ["All", ...Array.from(subSet)];
-  }, [productsData, activeMainCategory]);
+  }, [safeProductsData, activeMainCategory]);
 
   const handleAdd = (id: string) => {
     setSelectedItems(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
@@ -192,8 +205,7 @@ const Products = () => {
   };
 
   const handleWhatsAppCheckout = () => {
-    const safeProducts = Array.isArray(productsData) ? productsData : [];
-    const selectedProducts = safeProducts.filter(p => selectedItems[p._id || p.id]);
+    const selectedProducts = safeProductsData.filter(p => selectedItems[p._id || p.id]);
     const message = `Hello SK Korean Technologies! I am interested in exploring pricing and details for the following products:\n\n` + 
                     selectedProducts.map((p, i) => `${i + 1}. ${p.name} (Qty: ${selectedItems[p._id || p.id]})`).join('\n') + 
                     `\n\nPlease provide me with more information.`;
@@ -204,10 +216,9 @@ const Products = () => {
 
   // Filter products by Main Category, Sub Category, and Search Query
   const filteredProducts = useMemo(() => {
-    const safeProducts = Array.isArray(productsData) ? productsData : [];
     const query = searchQuery.toLowerCase().trim();
 
-    return safeProducts.filter(p => {
+    return safeProductsData.filter(p => {
       const pMainCat = p.category?.mainCategory?.name || '';
       const pSubCat = p.category?.name || p.category || '';
       const pName = p.name || '';
@@ -223,7 +234,7 @@ const Products = () => {
 
       return mainMatch && subMatch && searchMatch;
     });
-  }, [productsData, activeMainCategory, activeSubCategory, searchQuery]);
+  }, [safeProductsData, activeMainCategory, activeSubCategory, searchQuery]);
 
   if (loading) return <div className="text-center py-20 text-foreground font-semibold">Loading products catalog...</div>;
   if (error) return <div className="text-center py-20 text-red-500 font-semibold">{error}</div>;
@@ -306,7 +317,7 @@ const Products = () => {
               <span>All Main Categories</span>
             </button>
 
-            {mainCategories.map(mc => (
+            {safeMainCategories.map((mc: any) => (
               <button
                 key={mc.id || mc.name}
                 onClick={() => {
