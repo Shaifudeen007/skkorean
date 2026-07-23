@@ -9,7 +9,13 @@ const getProducts = async (req, res, next) => {
     try {
         const products = await prisma.product.findMany({
             where: { deletedAt: null },
-            include: { category: true }
+            include: {
+                category: {
+                    include: {
+                        mainCategory: true
+                    }
+                }
+            }
         });
         
         // Map to match frontend expectations
@@ -17,7 +23,15 @@ const getProducts = async (req, res, next) => {
             id: p.id,
             _id: p.id, // For frontend compatibility
             name: p.name,
-            category: p.category ? { id: p.category.id, name: p.category.name } : null,
+            category: p.category ? {
+                id: p.category.id,
+                name: p.category.name,
+                mainCategoryId: p.category.mainCategoryId,
+                mainCategory: p.category.mainCategory ? {
+                    id: p.category.mainCategory.id,
+                    name: p.category.mainCategory.name
+                } : null
+            } : null,
             mrp: p.mrp,
             discountPrice: p.discountPrice,
             description: p.description,
@@ -49,6 +63,13 @@ const createProduct = async (req, res, next) => {
                 mrp: mrp ? parseFloat(mrp) : null,
                 discountPrice: discountPrice ? parseFloat(discountPrice) : null,
                 image
+            },
+            include: {
+                category: {
+                    include: {
+                        mainCategory: true
+                    }
+                }
             }
         });
 
@@ -102,7 +123,11 @@ const getProductById = async (req, res, next) => {
                 id: req.params.id
             },
             include: {
-                category: true
+                category: {
+                    include: {
+                        mainCategory: true
+                    }
+                }
             }
         });
 
@@ -143,7 +168,14 @@ const updateProduct = async (req, res, next) => {
 
         const product = await prisma.product.update({
             where: { id: req.params.id },
-            data: dataToUpdate
+            data: dataToUpdate,
+            include: {
+                category: {
+                    include: {
+                        mainCategory: true
+                    }
+                }
+            }
         });
 
         res.status(200).json({ success: true, message: 'Product updated successfully', data: product });

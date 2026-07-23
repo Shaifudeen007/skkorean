@@ -36,12 +36,27 @@ model User {
   @@map("users")
 }
 
+model MainCategory {
+  id     String @id @default(uuid())
+  name   String @unique
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  categories Category[]
+
+  @@map("main_categories")
+}
+
 model Category {
-  id     String  @id @default(uuid())
-  name   String
-  slug   String  @unique
-  image  String?
-  status Boolean @default(true)
+  id             String       @id @default(uuid())
+  name           String
+  slug           String       @unique
+  image          String?
+  status         Boolean      @default(true)
+  mainCategoryId String
+  mainCategory   MainCategory @relation(fields: [mainCategoryId], references: [id], onDelete: Restrict)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -49,6 +64,7 @@ model Category {
 
   products Product[]
 
+  @@index([mainCategoryId])
   @@index([status])
   @@map("categories")
 }

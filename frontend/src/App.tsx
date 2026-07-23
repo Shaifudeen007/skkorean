@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Outlet } from 'react-router-dom';
-import { Sun, Moon, ShoppingCart, Menu, X, ChevronDown, Home, Package, MessageSquare, Info, Briefcase, MessageCircle } from 'lucide-react';
+import { Sun, Moon, ShoppingCart, Menu, X, ChevronDown, Home, Package, MessageSquare, Info, Briefcase, MessageCircle, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Preloader from './components/Preloader';
 import Hero from './components/Hero';
@@ -25,11 +25,12 @@ import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const ScrollToTop = () => {
-  const { pathname, hash } = useLocation();
+  const { pathname, hash, search } = useLocation();
 
   useEffect(() => {
     if (hash) {
-      const targetId = hash.replace('#', '');
+      const cleanHash = hash.split('?')[0];
+      const targetId = cleanHash.replace('#', '');
       setTimeout(() => {
         const element = document.getElementById(targetId);
         if (element) {
@@ -39,17 +40,18 @@ const ScrollToTop = () => {
     } else {
       window.scrollTo(0, 0);
     }
-  }, [pathname, hash]);
+  }, [pathname, hash, search]);
 
   return null;
 };
 
-const NAV_LINKS = [
+const MAIN_NAV_ITEMS = [
   { name: 'Home', href: '/#home' },
+  { name: 'Machineries', href: '/#products?mainCategory=Machineries' },
+  { name: 'PMU Products', href: '/#products?mainCategory=PMU%20Products' },
+  { name: 'Aesthetic Products', href: '/#products?mainCategory=Aesthetic%20Products' },
+  { name: 'Korean Products', href: '/#products?mainCategory=Korean%20Products' },
   { name: 'About Us', href: '/#about' },
-  { name: 'Products', href: '/#products' },
-  { name: 'Why Choose Us', href: '/#why-us' },
-  { name: 'Projects / Portfolio', href: '/#portfolio' },
   { name: 'Contact Us', href: '/#contact' },
 ];
 
@@ -69,31 +71,29 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
-            <span className="text-2xl font-bold tracking-tight">
+            <a href="/#home" className="text-xl sm:text-2xl font-bold tracking-tight">
               <span className="bg-clip-text text-transparent bg-glare-gradient bg-[length:200%_auto] animate-text-glare">SK</span>
               <span className="bg-clip-text text-transparent bg-gold-gradient ml-1">Korean Aesthetic Technologies</span>
-            </span>
+            </a>
           </div>
           
-          <div className="hidden xl:flex items-center space-x-6 text-sm font-medium">
-            {NAV_LINKS.slice(0, 5).map(link => (
-              <a key={link.name} href={link.href} className="text-foreground hover:text-primary transition-colors">{link.name}</a>
+          <div className="hidden xl:flex items-center space-x-5 text-sm font-medium">
+            {MAIN_NAV_ITEMS.map(link => (
+              <a 
+                key={link.name} 
+                href={link.href} 
+                className="text-foreground hover:text-primary transition-colors text-xs font-semibold whitespace-nowrap"
+              >
+                {link.name}
+              </a>
             ))}
-            <div className="relative group cursor-pointer flex items-center gap-1 text-foreground hover:text-primary transition-colors">
-              <span>More</span>
-              <ChevronDown className="w-4 h-4" />
-              <div className="absolute top-full right-0 mt-4 w-48 bg-card border border-border rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2">
-                {NAV_LINKS.slice(5).map(link => (
-                  <a key={link.name} href={link.href} className="px-4 py-2 hover:bg-primary/10 hover:text-primary transition-colors text-foreground">{link.name}</a>
-                ))}
-              </div>
-            </div>
             
             <button 
               onClick={toggleTheme}
-              className="ml-4 p-2 rounded-full bg-border hover:bg-primary/20 transition-colors"
+              className="ml-2 p-2 rounded-full bg-border hover:bg-primary/20 transition-colors"
+              title="Toggle theme"
             >
-              {isDark ? <Sun className="w-5 h-5 text-primary" /> : <Moon className="w-5 h-5 text-foreground" />}
+              {isDark ? <Sun className="w-4 h-4 text-primary" /> : <Moon className="w-4 h-4 text-foreground" />}
             </button>
           </div>
 
@@ -121,29 +121,33 @@ const MobileBottomBar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme
   }, []);
 
   return (
-    <div className="xl:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-sm transition-all duration-300">
-      <div className={`rounded-full px-6 py-3 flex justify-between items-center transition-all duration-300 ${
-        isScrolled ? 'bg-card/80 backdrop-blur-xl border border-border/50 shadow-2xl shadow-black/20' : 'bg-transparent border border-transparent'
+    <div className="xl:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-md transition-all duration-300">
+      <div className={`rounded-full px-4 py-3 flex justify-between items-center transition-all duration-300 ${
+        isScrolled ? 'bg-card/90 backdrop-blur-xl border border-border/50 shadow-2xl shadow-black/20' : 'bg-card/90 backdrop-blur-xl border border-border/50 shadow-lg'
       }`}>
-        <a href="/#home" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
-          <Home className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
-          <span className="text-[10px] font-medium dark:text-foreground/80">Home</span>
+        <a href="/#home" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+          <Home className="w-4 h-4" />
+          <span className="text-[9px] font-medium">Home</span>
         </a>
-        <a href="/#about" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
-          <Info className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
-          <span className="text-[10px] font-medium dark:text-foreground/80">About</span>
+        <a href="/#products?mainCategory=Machineries" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+          <Package className="w-4 h-4" />
+          <span className="text-[9px] font-medium">Machinery</span>
         </a>
-        <a href="/#products" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
-          <Package className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
-          <span className="text-[10px] font-medium dark:text-foreground/80">Products</span>
+        <a href="/#products?mainCategory=PMU%20Products" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+          <Layers className="w-4 h-4" />
+          <span className="text-[9px] font-medium">PMU</span>
         </a>
-        <a href="/#portfolio" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
-          <Briefcase className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
-          <span className="text-[10px] font-medium dark:text-foreground/80">Projects</span>
+        <a href="/#products?mainCategory=Aesthetic%20Products" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+          <Layers className="w-4 h-4" />
+          <span className="text-[9px] font-medium">Aesthetic</span>
         </a>
-        <a href="/#contact" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary dark:text-primary/90 transition-all">
-          <MessageSquare className="w-5 h-5 dark:drop-shadow-[0_0_8px_rgba(212,175,55,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.8)] transition-all" />
-          <span className="text-[10px] font-medium dark:text-foreground/80">Contact</span>
+        <a href="/#products?mainCategory=Korean%20Products" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+          <Layers className="w-4 h-4" />
+          <span className="text-[9px] font-medium">Korean</span>
+        </a>
+        <a href="/#contact" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+          <MessageSquare className="w-4 h-4" />
+          <span className="text-[9px] font-medium">Contact</span>
         </a>
       </div>
     </div>

@@ -1,13 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// Create Category
+// Create Sub Category
 exports.createCategory = async (req, res, next) => {
     try {
-        const { name, image } = req.body;
+        const { name, mainCategoryId, image } = req.body;
         
         if (!name) {
-            return res.status(400).json({ success: false, message: "Category name is required" });
+            return res.status(400).json({ success: false, message: "Sub category name is required" });
+        }
+        if (!mainCategoryId) {
+            return res.status(400).json({ success: false, message: "Main Category is required" });
         }
 
         const slug = name
@@ -20,7 +23,11 @@ exports.createCategory = async (req, res, next) => {
             data: {
                 name,
                 slug,
+                mainCategoryId,
                 image
+            },
+            include: {
+                mainCategory: true
             }
         });
         res.status(201).json({
@@ -32,87 +39,111 @@ exports.createCategory = async (req, res, next) => {
     }
 };
 
-// Get All Categories
+// Get All Sub Categories
 exports.getCategories = async (req, res, next) => {
     try {
+        const { mainCategoryId } = req.query;
+        const whereClause = {
+            deletedAt: null
+        };
+
+        if (mainCategoryId) {
+            whereClause.mainCategoryId = mainCategoryId;
+        }
+
         const categories = await prisma.category.findMany({
-            where:{
-                deletedAt:null
+            where: whereClause,
+            include: {
+                mainCategory: true
+            },
+            orderBy: {
+                name: 'asc'
             }
         });
         res.json({
-            success:true,
+            success: true,
             data: categories
         });
-    } catch(error){
+    } catch (error) {
         next(error);
     }
 };
 
-// Get Single Category
-exports.getCategoryById = async(req,res,next)=>{
-    try{
+// Get Single Sub Category
+exports.getCategoryById = async (req, res, next) => {
+    try {
         const category = await prisma.category.findUnique({
-            where:{
-                id:req.params.id
+            where: {
+                id: req.params.id
+            },
+            include: {
+                mainCategory: true
             }
         });
         res.json({
-            success:true,
+            success: true,
             category
         });
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 };
 
-// Update Category
-exports.updateCategory = async(req,res,next)=>{
-    try{
-        const { name, image } = req.body;
+// Update Sub Category
+exports.updateCategory = async (req, res, next) => {
+    try {
+        const { name, mainCategoryId, image } = req.body;
         
-        let dataToUpdate = { ...req.body };
-        
+        let dataToUpdate = {};
         if (name) {
-            const slug = name
+            dataToUpdate.name = name;
+            dataToUpdate.slug = name
                 .toLowerCase()
                 .trim()
                 .replace(/[\s_]+/g, '-')
                 .replace(/[^\w-]+/g, '');
-            dataToUpdate.slug = slug;
+        }
+        if (mainCategoryId) {
+            dataToUpdate.mainCategoryId = mainCategoryId;
+        }
+        if (image !== undefined) {
+            dataToUpdate.image = image;
         }
 
         const category = await prisma.category.update({
-            where:{
-                id:req.params.id
+            where: {
+                id: req.params.id
             },
-            data: dataToUpdate
+            data: dataToUpdate,
+            include: {
+                mainCategory: true
+            }
         });
         res.json({
-            success:true,
+            success: true,
             category
         });
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 };
 
-// Delete Category
-exports.deleteCategory = async(req,res,next)=>{
-    try{
+// Delete Sub Category
+exports.deleteCategory = async (req, res, next) => {
+    try {
         await prisma.category.update({
-            where:{
-                id:req.params.id
+            where: {
+                id: req.params.id
             },
-            data:{
-                deletedAt:new Date()
+            data: {
+                deletedAt: new Date()
             }
         });
         res.json({
-            success:true,
-            message:"Category deleted"
+            success: true,
+            message: "Category deleted"
         });
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 };

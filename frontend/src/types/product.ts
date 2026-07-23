@@ -1,8 +1,16 @@
+export interface MainCategory {
+  id: string;
+  name: string;
+  categories?: Category[];
+}
+
 export interface Category {
   id?: string;
   _id?: string;
   name: string;
   description?: string;
+  mainCategoryId?: string;
+  mainCategory?: MainCategory | { id: string; name: string };
 }
 
 export interface Product {
@@ -29,6 +37,7 @@ export interface Product {
 
 export interface ProductFormData {
   name: string;
+  mainCategoryId?: string;
   categoryId: string;
   mrp: string;
   discountPrice: string;

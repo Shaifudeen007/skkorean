@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
-import { Plus, X, Upload, Search, Edit2, Trash2, Package, Loader2, AlertCircle, Image as ImageIcon } from 'lucide-react';
+import { Plus, X, Upload, Search, Edit2, Trash2, Package, Loader2, AlertCircle, Image as ImageIcon, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getImageUrl } from '../../services/api';
 
@@ -11,7 +11,9 @@ const AdminProducts = () => {
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
-  const [categories, setCategories] = useState<any[]>([]);
+  
+  const [mainCategories, setMainCategories] = useState<any[]>([]);
+  const [subCategories, setSubCategories] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   
   // Pagination
@@ -20,6 +22,7 @@ const AdminProducts = () => {
 
   const [formData, setFormData] = useState({
     name: '',
+    mainCategoryId: '',
     categoryId: '',
     mrp: '',
     discountPrice: '',
@@ -33,10 +36,18 @@ const AdminProducts = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchCategories = async () => {
+  const fetchCategoriesAndMain = async () => {
     try {
-      const { data } = await api.get('/categories');
-      setCategories(data.categories || data.data || (Array.isArray(data) ? data : []));
+      const [mainRes, subRes] = await Promise.all([
+        api.get('/main-categories'),
+        api.get('/categories')
+      ]);
+
+      const mainList = mainRes.data.data || mainRes.data || [];
+      const subList = subRes.data.data || subRes.data.categories || subRes.data || [];
+
+      setMainCategories(mainList);
+      setSubCategories(subList);
     } catch (error) {
       toast.error('Failed to fetch categories');
     }
@@ -58,8 +69,14 @@ const AdminProducts = () => {
 
   useEffect(() => {
     fetchProducts();
-    fetchCategories();
+    fetchCategoriesAndMain();
   }, []);
+
+  // Filtered subcategories based on selected main category in form
+  const availableSubCategories = useMemo(() => {
+    if (!formData.mainCategoryId) return [];
+    return subCategories.filter(sc => (sc.mainCategoryId || sc.mainCategory?.id) === formData.mainCategoryId);
+  }, [subCategories, formData.mainCategoryId]);
 
   const handleDelete = async () => {
     if (!showDeleteConfirm) return;
@@ -76,9 +93,31 @@ const AdminProducts = () => {
 
   const handleEditClick = (product: any) => {
     setEditId(product.id || product._id);
+    
+    const prodCat = product.category;
+    const catId = typeof prodCat === 'object' && prodCat ? prodCat.id : (typeof prodCat === 'string' ? prodCat : '');
+    
+    // Find associated main category id
+    let mCatId = '';
+    if (typeof prodCat === 'object' && prodCat) {
+      mCatId = prodCat.mainCategoryId || prodCat.mainCategory?.id || '';
+    }
+    
+    if (!mCatId && catId) {
+      const match = subCategories.find(s => s.id === catId);
+      if (match) {
+        mCatId = match.mainCategoryId || match.mainCategory?.id || '';
+      }
+    }
+
+    if (!mCatId && mainCategories.length > 0) {
+      mCatId = mainCategories[0].id;
+    }
+
     setFormData({
       name: product.name || '',
-      categoryId: product.category?.id || (typeof product.category === 'string' ? product.category : ''),
+      mainCategoryId: mCatId,
+      categoryId: catId,
       mrp: product.mrp || product.originalPrice || '',
       discountPrice: product.discountPrice || product.price || '',
       description: product.description || '',
@@ -87,7 +126,6 @@ const AdminProducts = () => {
       procedure: product.procedure || '',
     });
     
-    // Set image preview if exists
     if (product.image) {
       setImagePreview(getImageUrl(product.image));
     } else {
@@ -100,14 +138,25 @@ const AdminProducts = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    
+    if (name === 'mainCategoryId') {
+      // When Main Category changes, filter sub categories and reset categoryId
+      const newSubCats = subCategories.filter(sc => (sc.mainCategoryId || sc.mainCategory?.id) === value);
+      setFormData(prev => ({
+        ...prev,
+        mainCategoryId: value,
+        categoryId: newSubCats.length > 0 ? (newSubCats[0].id || newSubCats[0]._id) : ''
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setImageFile(file);
-      // Create local preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -119,7 +168,7 @@ const AdminProducts = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.categoryId || !formData.description.trim()) {
-      return toast.error('Please fill in all required fields');
+      return toast.error('Please fill in all required fields (Name, Sub Category, Description)');
     }
 
     setSubmitting(true);
@@ -163,6 +212,7 @@ const AdminProducts = () => {
     setEditId(null);
     setFormData({
       name: '',
+      mainCategoryId: mainCategories[0]?.id || '',
       categoryId: '',
       mrp: '',
       discountPrice: '',
@@ -177,10 +227,14 @@ const AdminProducts = () => {
 
   // Filter and Pagination Logic
   const filteredProducts = useMemo(() => {
-    return products.filter(p => 
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      (p.category?.name || '').toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return products.filter(p => {
+      const nameMatch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const catName = p.category?.name || '';
+      const mainCatName = p.category?.mainCategory?.name || '';
+      const catMatch = catName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                       mainCatName.toLowerCase().includes(searchQuery.toLowerCase());
+      return nameMatch || catMatch;
+    });
   }, [products, searchQuery]);
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -189,10 +243,30 @@ const AdminProducts = () => {
     currentPage * itemsPerPage
   );
 
-  // Reset to page 1 on search
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
+  const handleOpenForm = () => {
+    if (showForm) {
+      resetForm();
+    } else {
+      const defaultMain = mainCategories[0]?.id || '';
+      const defaultSubCats = subCategories.filter(sc => (sc.mainCategoryId || sc.mainCategory?.id) === defaultMain);
+      setFormData({
+        name: '',
+        mainCategoryId: defaultMain,
+        categoryId: defaultSubCats[0]?.id || '',
+        mrp: '',
+        discountPrice: '',
+        description: '',
+        keyFeatures: '',
+        whyChooseUs: '',
+        procedure: '',
+      });
+      setShowForm(true);
+    }
+  };
 
   return (
     <div className="space-y-6 pb-10 max-w-7xl mx-auto">
@@ -200,17 +274,11 @@ const AdminProducts = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">Products</h1>
-          <p className="text-foreground/60 mt-1">Manage your catalog items</p>
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">Products Catalog</h1>
+          <p className="text-foreground/60 mt-1">Manage catalog items under Main & Sub Categories</p>
         </div>
         <button 
-          onClick={() => {
-            if (showForm) {
-              resetForm();
-            } else {
-              setShowForm(true);
-            }
-          }}
+          onClick={handleOpenForm}
           className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 active:scale-95"
         >
           {showForm ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
@@ -235,9 +303,10 @@ const AdminProducts = () => {
             
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Product Name & Category Selectors */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-foreground/80 mb-2">Heading (Name) <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-foreground/80 mb-2">Product Name <span className="text-red-500">*</span></label>
                   <input 
                     required
                     type="text" 
@@ -248,28 +317,45 @@ const AdminProducts = () => {
                     placeholder="e.g. Laser Hair Removal Machine"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-foreground/80 mb-2">Category <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-foreground/80 mb-2">1. Main Category <span className="text-red-500">*</span></label>
+                  <select 
+                    required
+                    name="mainCategoryId"
+                    value={formData.mainCategoryId}
+                    onChange={handleInputChange}
+                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-pointer font-medium"
+                  >
+                    <option value="" disabled>Select Main Category</option>
+                    {mainCategories.map(mc => (
+                      <option key={mc.id} value={mc.id}>{mc.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground/80 mb-2">2. Sub Category <span className="text-red-500">*</span></label>
                   <select 
                     required
                     name="categoryId"
                     value={formData.categoryId}
                     onChange={handleInputChange}
-                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none cursor-pointer"
+                    disabled={availableSubCategories.length === 0}
+                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <option value="" disabled>Select Category</option>
-                    {editId && formData.categoryId && !categories.some(c => (c.id || c._id) === formData.categoryId) && (
-                      <option value={formData.categoryId}>
-                        {products.find(p => (p.id || p._id) === editId)?.category?.name || 'Unknown Category'}
-                      </option>
+                    {availableSubCategories.length === 0 ? (
+                      <option value="">No Sub Categories (Create one first)</option>
+                    ) : (
+                      availableSubCategories.map(sc => (
+                        <option key={sc.id || sc._id} value={sc.id || sc._id}>{sc.name}</option>
+                      ))
                     )}
-                    {categories.map(c => (
-                      <option key={c.id || c._id} value={c.id || c._id}>{c.name}</option>
-                    ))}
                   </select>
                 </div>
               </div>
 
+              {/* Pricing */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground/80 mb-2">MRP Price</label>
@@ -301,6 +387,7 @@ const AdminProducts = () => {
                 </div>
               </div>
 
+              {/* Description & Image Upload */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground/80 mb-2">Description <span className="text-red-500">*</span></label>
@@ -311,7 +398,7 @@ const AdminProducts = () => {
                     onChange={handleInputChange}
                     rows={6}
                     className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
-                    placeholder="Write a compelling product description..."
+                    placeholder="Write a detailed product description..."
                   />
                 </div>
                 
@@ -347,6 +434,7 @@ const AdminProducts = () => {
                 </div>
               </div>
 
+              {/* Key Features, Why Choose Us, Procedure */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground/80 mb-2">Key Features</label>
@@ -428,71 +516,82 @@ const AdminProducts = () => {
               <p>Loading products...</p>
             </div>
           ) : paginatedProducts.length > 0 ? (
-            <table className="w-full text-left whitespace-nowrap min-w-[700px]">
+            <table className="w-full text-left whitespace-nowrap min-w-[800px]">
               <thead className="bg-background/50 text-foreground/60 text-sm">
                 <tr>
                   <th className="px-6 py-4 font-semibold rounded-tl-2xl">Product</th>
-                  <th className="px-6 py-4 font-semibold">Category</th>
+                  <th className="px-6 py-4 font-semibold">Main Category</th>
+                  <th className="px-6 py-4 font-semibold">Sub Category</th>
                   <th className="px-6 py-4 font-semibold">Price</th>
                   <th className="px-6 py-4 font-semibold text-right rounded-tr-2xl">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
-                {paginatedProducts.map((p) => (
-                  <tr key={p.id || p._id} className="hover:bg-border/20 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-background border border-border overflow-hidden flex-shrink-0 flex items-center justify-center">
-                          {p.image ? (
-                            <img src={getImageUrl(p.image)} alt={p.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <ImageIcon className="w-5 h-5 text-foreground/30" />
-                          )}
+                {paginatedProducts.map((p) => {
+                  const subCatName = p.category?.name || 'Uncategorized';
+                  const mainCatName = p.category?.mainCategory?.name || 'Machineries';
+
+                  return (
+                    <tr key={p.id || p._id} className="hover:bg-border/20 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-lg bg-background border border-border overflow-hidden flex-shrink-0 flex items-center justify-center">
+                            {p.image ? (
+                              <img src={getImageUrl(p.image)} alt={p.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <ImageIcon className="w-5 h-5 text-foreground/30" />
+                            )}
+                          </div>
+                          <div className="max-w-[220px]">
+                            <p className="font-medium text-foreground truncate" title={p.name}>{p.name}</p>
+                          </div>
                         </div>
-                        <div className="max-w-[250px]">
-                          <p className="font-medium text-foreground truncate" title={p.name}>{p.name}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                          {mainCatName}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                          {subCatName}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        {p.discountPrice || p.price ? (
+                          <div className="flex flex-col justify-center">
+                            <span className="font-bold text-foreground">₹{p.discountPrice || p.price}</span>
+                            {(p.mrp || p.originalPrice) && (
+                              <span className="line-through text-xs text-foreground/40 mt-0.5">₹{p.mrp || p.originalPrice}</span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-sm font-medium text-foreground/60">Enquire</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button 
+                            onClick={() => handleEditClick(p)} 
+                            className="p-2 bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white rounded-lg transition-colors flex items-center gap-2"
+                            title="Edit"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                            <span className="sr-only">Edit</span>
+                          </button>
+                          <button 
+                            onClick={() => setShowDeleteConfirm(p.id || p._id)} 
+                            className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-colors flex items-center gap-2"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            <span className="sr-only">Delete</span>
+                          </button>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                        {p.category?.name || p.category || 'Uncategorized'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      {p.discountPrice || p.price ? (
-                        <div className="flex flex-col justify-center">
-                          <span className="font-bold text-foreground">₹{p.discountPrice || p.price}</span>
-                          {(p.mrp || p.originalPrice) && (
-                            <span className="line-through text-xs text-foreground/40 mt-0.5">₹{p.mrp || p.originalPrice}</span>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-sm font-medium text-foreground/60">Enquire</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button 
-                          onClick={() => handleEditClick(p)} 
-                          className="p-2 bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white rounded-lg transition-colors flex items-center gap-2"
-                          title="Edit"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                          <span className="sr-only">Edit</span>
-                        </button>
-                        <button 
-                          onClick={() => setShowDeleteConfirm(p.id || p._id)} 
-                          className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-colors flex items-center gap-2"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          <span className="sr-only">Delete</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           ) : (
@@ -508,7 +607,7 @@ const AdminProducts = () => {
               </p>
               {!searchQuery && (
                 <button 
-                  onClick={() => setShowForm(true)}
+                  onClick={handleOpenForm}
                   className="mt-6 px-4 py-2 bg-primary/10 text-primary font-semibold rounded-lg hover:bg-primary/20 transition-colors"
                 >
                   Create Product
@@ -566,7 +665,7 @@ const AdminProducts = () => {
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">Delete Product</h3>
               <p className="text-foreground/70 mb-8 leading-relaxed">
-                Are you sure you want to permanently delete this product? This action cannot be undone and will remove it from the public catalog.
+                Are you sure you want to permanently delete this product? This action cannot be undone.
               </p>
               <div className="flex flex-col sm:flex-row justify-end gap-3">
                 <button 
