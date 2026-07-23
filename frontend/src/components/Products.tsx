@@ -118,13 +118,36 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Sync active main category from URL hash or query params if present
+  // Sync active main category from URL hash or search query params
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const mainParam = searchParams.get('mainCategory') || searchParams.get('main');
+    let mainParam: string | null = null;
+    
+    // Check search params (e.g., ?mainCategory=Machineries)
+    if (location.search) {
+      const searchParams = new URLSearchParams(location.search);
+      mainParam = searchParams.get('mainCategory') || searchParams.get('main');
+    }
+    
+    // Check hash params (e.g., /#products?mainCategory=Machineries)
+    if (!mainParam && location.hash && location.hash.includes('?')) {
+      const queryString = location.hash.split('?')[1];
+      const hashParams = new URLSearchParams(queryString);
+      mainParam = hashParams.get('mainCategory') || hashParams.get('main');
+    }
+
     if (mainParam) {
-      setActiveMainCategory(mainParam);
+      const decodedParam = decodeURIComponent(mainParam);
+      setActiveMainCategory(decodedParam);
       setActiveSubCategory("All");
+      setVisibleCount(16);
+
+      // Smooth scroll to products section
+      setTimeout(() => {
+        const el = document.getElementById('products');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
     }
   }, [location.search, location.hash]);
 
