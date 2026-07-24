@@ -117,7 +117,7 @@ const createProduct = async (req, res, next) => {
 
         const productData = {
             name,
-            categoryId,
+            ...(categoryId && { category: { connect: { id: categoryId } } }),
             description,
             keyFeatures: keyFeatures || null,
             whyChooseUs: whyChooseUs || null,
@@ -233,7 +233,7 @@ const updateProduct = async (req, res, next) => {
 
         const dataToUpdate = {
             ...(name !== undefined && { name }),
-            ...(categoryId !== undefined && { categoryId }),
+            ...(categoryId !== undefined && { category: { connect: { id: categoryId } } }),
             ...(description !== undefined && { description }),
             ...(keyFeatures !== undefined && { keyFeatures }),
             ...(whyChooseUs !== undefined && { whyChooseUs }),
