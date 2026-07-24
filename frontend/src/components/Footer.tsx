@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Globe, MessageCircle, Share2, Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
+import { Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -52,14 +52,12 @@ const Footer = () => {
               The premier B2B distributor of elite South Korean laser systems and aesthetic devices, empowering professionals worldwide.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-card border border-border/50 flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all">
-                <Globe className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-card border border-border/50 flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all">
-                <MessageCircle className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-card border border-border/50 flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all">
-                <Share2 className="w-5 h-5" />
+              <a href="https://www.instagram.com/skkoreanaesthetictechnologies?igsh=MWg5b3ppbXF5Znh0Mg==" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-card border border-border/50 flex items-center justify-center text-foreground/70 hover:text-primary hover:border-primary/50 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                </svg>
               </a>
             </div>
           </motion.div>
