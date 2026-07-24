@@ -40,7 +40,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-card border border-border/50 shadow-2xl rounded-2xl z-[101] overflow-hidden flex flex-col max-h-[85vh]"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg bg-card border border-border/50 shadow-2xl rounded-2xl z-[101] overflow-hidden flex flex-col max-h-[85vh]"
           >
             <div className="p-4 sm:p-6 border-b border-border/50 flex justify-between items-center bg-card">
               <h2 className="text-xl font-bold text-foreground">Your Selection ({totalItems})</h2>

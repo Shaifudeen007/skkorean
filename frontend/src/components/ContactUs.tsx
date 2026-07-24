@@ -27,7 +27,7 @@ const ContactUs = () => {
           className="flex flex-col items-center mb-16 text-center"
         >
           <div className="relative inline-block">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground">
               Contact Us
             </h2>
             <svg className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-6 text-primary drop-shadow-[0_0_10px_rgba(212,175,55,0.6)]" viewBox="0 0 100 20" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -94,7 +94,7 @@ const ContactUs = () => {
                 </div>
                 <div className="flex flex-col pt-1">
                   <span className="font-outfit font-bold text-foreground mb-1">Email Address</span>
-                  <a href="mailto:Skbeautyverseofficial@gmail.com" className="text-foreground/70 hover:text-primary transition-colors text-sm">Skbeautyverseofficial@gmail.com</a>
+                  <a href="mailto:Skbeautyverseofficial@gmail.com" className="text-foreground/70 hover:text-primary transition-colors text-sm break-all">Skbeautyverseofficial@gmail.com</a>
                 </div>
               </div>
             </div>

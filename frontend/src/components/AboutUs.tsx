@@ -88,7 +88,7 @@ const AboutUs = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="grid grid-cols-2 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-8"
           >
             <div className="p-6 rounded-3xl bg-card border border-primary/30 shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:border-primary hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300 flex flex-col items-center text-center group">
               <Counter from={0} to={100} suffix="+" />
@@ -110,7 +110,7 @@ const AboutUs = () => {
               <span className="mt-2 text-sm text-foreground/70 font-medium group-hover:text-primary transition-colors">Years Experience</span>
             </div>
 
-            <div className="col-span-2 p-6 rounded-3xl bg-gold-gradient shadow-[0_0_30px_rgba(212,175,55,0.2)] flex flex-col items-center text-center text-white">
+            <div className="col-span-1 sm:col-span-2 p-6 rounded-3xl bg-gold-gradient shadow-[0_0_30px_rgba(212,175,55,0.2)] flex flex-col items-center text-center text-white">
               <span className="font-outfit font-bold text-4xl md:text-5xl">24/7</span>
               <span className="mt-2 text-sm font-medium text-white/90">Technical Support</span>
             </div>

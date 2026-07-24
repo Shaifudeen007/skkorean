@@ -399,7 +399,7 @@ const Catalog = () => {
                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(212,175,55,0.4)]"></div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
                     <AnimatePresence mode="popLayout">
                       {categoryProducts.slice(0, visibleCount).map((product, i) => (
                         <ProductCard 
