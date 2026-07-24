@@ -231,28 +231,24 @@ const Products = () => {
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 w-16 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(212,175,55,0.4)]"></div>
                   </div>
                   
-                  {products.length > 3 && (
-                    <button 
-                      onClick={() => navigate(`/catalog?mainCategory=${encodeURIComponent(mc.name)}`)}
-                      className="group flex items-center gap-2 text-sm font-semibold text-primary hover:text-foreground transition-colors"
-                    >
-                      <span>Show More</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  )}
+                  {/* Show More link hidden as per user request to have button at the bottom */}
                 </div>
 
                 <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
                   <AnimatePresence mode="popLayout">
                     {products.slice(0, 3).map((product, i) => (
-                      <ProductCard 
+                      <div 
                         key={product._id || product.id} 
-                        product={product} 
-                        index={i} 
-                        quantity={cartItems[product._id || product.id]?.quantity || 0}
-                        onAdd={() => addItem(product)}
-                        onRemove={() => removeItem(product._id || product.id)}
-                      />
+                        className={i === 2 ? "col-span-2 sm:col-span-1 px-[25%] sm:px-0" : ""}
+                      >
+                        <ProductCard 
+                          product={product} 
+                          index={i} 
+                          quantity={cartItems[product._id || product.id]?.quantity || 0}
+                          onAdd={() => addItem(product)}
+                          onRemove={() => removeItem(product._id || product.id)}
+                        />
+                      </div>
                     ))}
                     
                     {/* View All Card for 4th spot if there are more products (xl displays 4 cols) */}
@@ -276,17 +272,15 @@ const Products = () => {
                   </AnimatePresence>
                 </div>
                 
-                {/* Mobile Show More (visible when < xl) */}
-                {products.length > 3 && (
-                  <div className="mt-6 flex justify-center xl:hidden">
-                     <button 
-                      onClick={() => navigate(`/catalog?mainCategory=${encodeURIComponent(mc.name)}`)}
-                      className="px-6 py-2.5 rounded-full border border-border/80 text-foreground text-sm font-semibold hover:border-primary hover:text-primary transition-colors flex items-center gap-2"
-                    >
-                      View All {mc.name} <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
+                {/* Always show Show More button */}
+                <div className="mt-8 flex justify-center">
+                   <button 
+                    onClick={() => navigate(`/catalog?mainCategory=${encodeURIComponent(mc.name)}`)}
+                    className="px-8 py-3 rounded-full border border-border/80 text-foreground text-sm font-bold hover:border-primary hover:text-primary transition-colors flex items-center gap-2 shadow-sm"
+                  >
+                    Show More {mc.name} <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             );
           })}
