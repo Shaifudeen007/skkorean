@@ -20,7 +20,7 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
       }`}
       onClick={() => navigate(`/product/${product._id || product.id}`)}
     >
-      <div className="relative w-full h-[180px] sm:h-[240px] rounded-[1rem] sm:rounded-[1.5rem] overflow-hidden bg-primary/5 mb-3 sm:mb-4">
+      <div className="relative w-full h-[140px] sm:h-[240px] rounded-[1rem] sm:rounded-[1.5rem] overflow-hidden bg-primary/5 mb-3 sm:mb-4">
         <button 
           className={`absolute top-2 right-2 sm:top-3 sm:right-3 z-20 p-2 sm:p-2.5 rounded-full backdrop-blur-md transition-all ${
             isSelected ? 'bg-primary text-primary-foreground' : 'bg-background/50 text-foreground/70 hover:text-primary hover:bg-background'
@@ -93,7 +93,7 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
             </div>
           ) : (
             <button 
-              className="w-full xl:w-auto px-4 py-1.5 sm:px-6 sm:py-2.5 rounded-full font-semibold transition-colors text-[10px] sm:text-sm bg-foreground text-background hover:bg-primary hover:text-primary-foreground"
+              className="w-full xl:w-auto px-2 py-1.5 sm:px-6 sm:py-2.5 rounded-full font-semibold transition-colors text-[10px] sm:text-sm bg-foreground text-background hover:bg-primary hover:text-primary-foreground"
               onClick={(e) => { e.stopPropagation(); onAdd(); }}
             >
               Select
@@ -242,7 +242,7 @@ const Products = () => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
                   <AnimatePresence mode="popLayout">
                     {products.slice(0, 3).map((product, i) => (
                       <ProductCard 
