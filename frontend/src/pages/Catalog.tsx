@@ -77,11 +77,11 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
             <div className="flex flex-col gap-0.5">
               {(product.originalPrice || product.mrp) && (
                 <span className="text-[11px] sm:text-xs text-foreground/50 line-through">
-                  â‚¹{product.originalPrice || product.mrp}
+                  ₹{product.originalPrice || product.mrp}
                 </span>
               )}
               <span className="font-outfit font-bold text-base sm:text-xl text-foreground">
-                â‚¹{product.discountPrice || product.price || product.mrp}
+                ₹{product.discountPrice || product.price || product.mrp}
               </span>
             </div>
           ) : (
