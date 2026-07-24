@@ -4,6 +4,13 @@ import { CheckCircle2, Circle, MessageCircle, Search, Layers } from 'lucide-reac
 import { useNavigate, useLocation } from 'react-router-dom';
 import api, { getImageUrl } from '../services/api';
 import { useCart } from '../context/CartContext';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 
 const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: any, index: number, quantity: number, onAdd: () => void, onRemove: () => void }) => {
   const navigate = useNavigate();
@@ -261,7 +268,7 @@ const Catalog = () => {
         >
           <div className="flex flex-col md:flex-row justify-between items-center w-full gap-6">
             <div className="relative inline-block text-center md:text-left">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground whitespace-nowrap">
                 Product Catalog
               </h2>
               <svg className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-6 text-primary drop-shadow-[0_0_10px_rgba(212,175,55,0.6)] md:left-0 md:translate-x-0" viewBox="0 0 100 20" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -292,45 +299,47 @@ const Catalog = () => {
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
                 {/* Main Category */}
                 <div className="relative w-full sm:w-auto min-w-[160px]">
-                  <select
+                  <Select
                     value={activeMainCategory}
-                    onChange={(e) => {
-                      setActiveMainCategory(e.target.value);
+                    onValueChange={(val) => {
+                      setActiveMainCategory(val);
                       setActiveSubCategory("All");
                       setVisibleCount(16);
                     }}
-                    className="w-full appearance-none bg-card/80 border border-border/60 text-foreground text-sm font-semibold rounded-full px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-md shadow-black/5 cursor-pointer"
                   >
-                    <option value="All">All Categories</option>
-                    {safeMainCategories.map((mc: any) => (
-                      <option key={mc.id || mc.name} value={mc.name}>{mc.name}</option>
-                    ))}
-                  </select>
-                  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-foreground/50">
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
-                  </div>
+                    <SelectTrigger className="w-full bg-card/80 border-border/60 font-semibold rounded-full px-4 py-3 h-auto shadow-md shadow-black/5 text-foreground">
+                      <SelectValue placeholder="All Categories" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-border/60 rounded-xl shadow-lg">
+                      <SelectItem value="All" className="font-semibold cursor-pointer">All Categories</SelectItem>
+                      {safeMainCategories.map((mc: any) => (
+                        <SelectItem key={mc.id || mc.name} value={mc.name} className="font-semibold cursor-pointer">{mc.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Sub Category */}
                 {subCategoriesList.length > 1 && (
                   <div className="relative w-full sm:w-auto min-w-[160px]">
-                    <select
+                    <Select
                       value={activeSubCategory}
-                      onChange={(e) => {
-                        setActiveSubCategory(e.target.value);
+                      onValueChange={(val) => {
+                        setActiveSubCategory(val);
                         setVisibleCount(16);
                       }}
-                      className="w-full appearance-none bg-card/80 border border-border/60 text-foreground text-sm font-semibold rounded-full px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-md shadow-black/5 cursor-pointer"
                     >
-                      {subCategoriesList.map(subCat => (
-                        <option key={subCat} value={subCat}>
-                          {subCat === "All" ? "All Sub Categories" : subCat}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-foreground/50">
-                      <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
-                    </div>
+                      <SelectTrigger className="w-full bg-card/80 border-border/60 font-semibold rounded-full px-4 py-3 h-auto shadow-md shadow-black/5 text-foreground">
+                        <SelectValue placeholder="All Sub Categories" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card border-border/60 rounded-xl shadow-lg">
+                        {subCategoriesList.map(subCat => (
+                          <SelectItem key={subCat} value={subCat} className="font-semibold cursor-pointer">
+                            {subCat === "All" ? "All Sub Categories" : subCat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 )}
               </div>
