@@ -285,16 +285,65 @@ const Catalog = () => {
               </svg>
             </div>
 
-            {/* Search Bar */}
-            <div className="w-full md:max-w-md px-2">
-              <div className="relative flex items-center">
+            {/* Controls (Search & Dropdowns) */}
+            <div className="flex flex-col lg:flex-row items-center justify-end w-full gap-4 px-2">
+              
+              {/* Category Dropdowns */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+                {/* Main Category */}
+                <div className="relative w-full sm:w-auto min-w-[160px]">
+                  <select
+                    value={activeMainCategory}
+                    onChange={(e) => {
+                      setActiveMainCategory(e.target.value);
+                      setActiveSubCategory("All");
+                      setVisibleCount(16);
+                    }}
+                    className="w-full appearance-none bg-card/80 border border-border/60 text-foreground text-sm font-semibold rounded-full px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-md shadow-black/5 cursor-pointer"
+                  >
+                    <option value="All">All Categories</option>
+                    {safeMainCategories.map((mc: any) => (
+                      <option key={mc.id || mc.name} value={mc.name}>{mc.name}</option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-foreground/50">
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                  </div>
+                </div>
+
+                {/* Sub Category */}
+                {subCategoriesList.length > 1 && (
+                  <div className="relative w-full sm:w-auto min-w-[160px]">
+                    <select
+                      value={activeSubCategory}
+                      onChange={(e) => {
+                        setActiveSubCategory(e.target.value);
+                        setVisibleCount(16);
+                      }}
+                      className="w-full appearance-none bg-card/80 border border-border/60 text-foreground text-sm font-semibold rounded-full px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-md shadow-black/5 cursor-pointer"
+                    >
+                      {subCategoriesList.map(subCat => (
+                        <option key={subCat} value={subCat}>
+                          {subCat === "All" ? "All Sub Categories" : subCat}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-foreground/50">
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative flex items-center w-full lg:w-64">
                 <Search className="absolute left-4 w-5 h-5 text-foreground/50 pointer-events-none" />
                 <input 
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products, sub categories..."
-                  className="w-full pl-12 pr-10 py-3 sm:py-3.5 bg-card/80 border border-border/60 rounded-full text-foreground text-sm sm:text-base placeholder:text-foreground/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-md shadow-black/5"
+                  placeholder="Search products..."
+                  className="w-full pl-12 pr-10 py-3 bg-card/80 border border-border/60 rounded-full text-foreground text-sm placeholder:text-foreground/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-md shadow-black/5"
                 />
                 {searchQuery && (
                   <button 
@@ -307,66 +356,6 @@ const Catalog = () => {
               </div>
             </div>
           </div>
-
-          {/* 1. Main Category Tabs (Top Tier) */}
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-8 w-full max-w-5xl">
-            <button
-              onClick={() => {
-                setActiveMainCategory("All");
-                setActiveSubCategory("All");
-                setVisibleCount(16);
-              }}
-              className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
-                activeMainCategory === "All"
-                  ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgba(212,175,55,0.4)] scale-105'
-                  : 'bg-card border border-border/60 text-foreground/70 hover:border-primary/50 hover:text-primary'
-              }`}
-            >
-              <span>All</span>
-            </button>
-
-            {safeMainCategories.map((mc: any) => (
-              <button
-                key={mc.id || mc.name}
-                onClick={() => {
-                  setActiveMainCategory(mc.name);
-                  setActiveSubCategory("All");
-                  setVisibleCount(16);
-                }}
-                className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
-                  activeMainCategory === mc.name
-                    ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgba(212,175,55,0.4)] scale-105'
-                    : 'bg-card border border-border/60 text-foreground/70 hover:border-primary/50 hover:text-primary'
-                }`}
-              >
-                <Layers className="w-4 h-4" />
-                <span>{mc.name}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* 2. Sub Category Pills (Second Tier) */}
-          {subCategoriesList.length > 1 && (
-            <div className="flex flex-wrap justify-center gap-2 mt-4 w-full max-w-4xl pt-2">
-              {subCategoriesList.map(subCat => (
-                <button
-                  key={subCat}
-                  onClick={() => {
-                    setActiveSubCategory(subCat);
-                    setVisibleCount(16);
-                  }}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
-                    activeSubCategory === subCat
-                      ? 'bg-foreground text-background font-bold shadow-md'
-                      : 'bg-card/60 border border-border/40 text-foreground/60 hover:text-foreground hover:border-border'
-                  }`}
-                >
-                  {subCat === "All" ? "All" : subCat}
-                </button>
-              ))}
-            </div>
-          )}
-
         </motion.div>
 
         {/* Product Cards Grid */}
