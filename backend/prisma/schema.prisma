@@ -74,6 +74,10 @@ model Product {
   name        String
   description String
 
+  keyFeatures String?
+  whyChooseUs String?
+  procedure   String?
+
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 
