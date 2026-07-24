@@ -223,12 +223,12 @@ const Products = () => {
 
             return (
               <div key={mc.id || mc.name} className="w-full">
-                <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center mb-8 gap-4">
-                  <div className="relative inline-block">
+                <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                  <div className="relative inline-block text-center sm:text-left">
                     <h3 className="text-3xl font-serif font-bold text-foreground pb-2">
                       {mc.name}
                     </h3>
-                    <div className="absolute bottom-0 left-0 w-16 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(212,175,55,0.4)]"></div>
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 w-16 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(212,175,55,0.4)]"></div>
                   </div>
                   
                   {products.length > 3 && (
