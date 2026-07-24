@@ -23,6 +23,9 @@ import Dashboard from './pages/Admin/Dashboard';
 import Profile from './pages/Admin/Profile';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
+import { CartProvider } from './context/CartContext';
+import CartPopup from './components/CartPopup';
+import Catalog from './pages/Catalog';
 
 const ScrollToTop = () => {
   const { pathname, hash, search } = useLocation();
@@ -55,11 +58,11 @@ const NAV_LINKS = [
 ];
 
 const MAIN_CATEGORIES_DROPDOWN = [
-  { name: 'All Products', href: '/#products?mainCategory=All' },
-  { name: 'Machineries', href: '/#products?mainCategory=Machineries' },
-  { name: 'PMU Products', href: '/#products?mainCategory=PMU%20Products' },
-  { name: 'Aesthetic Products', href: '/#products?mainCategory=Aesthetic%20Products' },
-  { name: 'Korean Products', href: '/#products?mainCategory=Korean%20Products' },
+  { name: 'All Products', href: '/catalog?mainCategory=All' },
+  { name: 'Machineries', href: '/catalog?mainCategory=Machineries' },
+  { name: 'PMU Products', href: '/catalog?mainCategory=PMU%20Products' },
+  { name: 'Aesthetic Products', href: '/catalog?mainCategory=Aesthetic%20Products' },
+  { name: 'Korean Products', href: '/catalog?mainCategory=Korean%20Products' },
 ];
 
 const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => void }) => {
@@ -229,14 +232,17 @@ function App() {
   const toggleTheme = () => setIsDark(!isDark);
 
   return (
-    <Router>
-      <ScrollToTop />
-      <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 scroll-smooth relative z-0">
-        <BackgroundEffects />
-        
-        <Routes>
+    <CartProvider>
+      <Router>
+        <ScrollToTop />
+        <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 scroll-smooth relative z-0">
+          <BackgroundEffects />
+          <CartPopup />
+          
+          <Routes>
           <Route element={<PublicLayout isDark={isDark} toggleTheme={toggleTheme} />}>
             <Route path="/" element={<HomePage loading={loading} setLoading={setLoading} />} />
+            <Route path="/catalog" element={<Catalog />} />
             <Route path="/product/:id" element={<ProductDetail />} />
           </Route>
           
@@ -259,6 +265,7 @@ function App() {
         <ToastContainer position="top-right" theme={isDark ? 'dark' : 'light'} />
       </div>
     </Router>
+    </CartProvider>
   );
 }
 
