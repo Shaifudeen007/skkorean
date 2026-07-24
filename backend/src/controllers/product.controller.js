@@ -96,9 +96,16 @@ const getProductById = async (req, res, next) => {
             });
         }
 
+        const formattedProduct = formatProductResponse(product);
+
         res.json({
             success: true,
-            product: formatProductResponse(product)
+            product: {
+                ...formattedProduct,
+                keyFeatures: product.keyFeatures !== undefined ? product.keyFeatures : formattedProduct.keyFeatures,
+                whyChooseUs: product.whyChooseUs !== undefined ? product.whyChooseUs : formattedProduct.whyChooseUs,
+                procedure: product.procedure !== undefined ? product.procedure : formattedProduct.procedure
+            }
         });
 
     } catch (error) {
