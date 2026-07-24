@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Helper to format product object for API responses
-const formatProductResponse = (p) => {
+const formatProductResponse = (p, extraFields = {}) => {
     const formattedImages = (p.images && p.images.length > 0)
         ? p.images.map(img => ({ id: img.id, url: img.url }))
         : (p.image ? [{ id: 'legacy', url: p.image }] : []);
@@ -15,6 +15,10 @@ const formatProductResponse = (p) => {
         id: p.id,
         _id: p.id, // For frontend compatibility
         name: p.name,
+        description: p.description,
+        keyFeatures: p.keyFeatures !== undefined ? p.keyFeatures : (extraFields.keyFeatures !== undefined ? extraFields.keyFeatures : null),
+        whyChooseUs: p.whyChooseUs !== undefined ? p.whyChooseUs : (extraFields.whyChooseUs !== undefined ? extraFields.whyChooseUs : null),
+        procedure: p.procedure !== undefined ? p.procedure : (extraFields.procedure !== undefined ? extraFields.procedure : null),
         category: p.category ? {
             id: p.category.id,
             name: p.category.name,
@@ -26,7 +30,6 @@ const formatProductResponse = (p) => {
         } : null,
         mrp: p.mrp,
         discountPrice: p.discountPrice,
-        description: p.description,
         image: primaryImage,
         images: formattedImages,
         status: p.status,
@@ -53,7 +56,7 @@ const getProducts = async (req, res, next) => {
             }
         });
         
-        const formattedProducts = products.map(formatProductResponse);
+        const formattedProducts = products.map(p => formatProductResponse(p));
         res.status(200).json(formattedProducts);
     } catch (error) {
         next(error);
@@ -101,7 +104,7 @@ const getProductById = async (req, res, next) => {
 // @route   POST /api/products
 const createProduct = async (req, res, next) => {
     try {
-        const { name, categoryId, mrp, discountPrice, description } = req.body;
+        const { name, categoryId, mrp, discountPrice, description, keyFeatures, whyChooseUs, procedure } = req.body;
         
         let uploadedUrls = [];
         if (req.files && req.files.length > 0) {
@@ -144,7 +147,7 @@ const createProduct = async (req, res, next) => {
         res.status(201).json({
             success: true,
             message: 'Product created successfully',
-            data: formatProductResponse(product)
+            data: formatProductResponse(product, { keyFeatures, whyChooseUs, procedure })
         });
     } catch (error) {
         next(error);
@@ -155,7 +158,7 @@ const createProduct = async (req, res, next) => {
 // @route   PUT /api/products/:id
 const updateProduct = async (req, res, next) => {
     try {
-        const { name, categoryId, mrp, discountPrice, description, deletedImageIds } = req.body;
+        const { name, categoryId, mrp, discountPrice, description, keyFeatures, whyChooseUs, procedure, deletedImageIds } = req.body;
         const productId = req.params.id;
 
         const existingProduct = await prisma.product.findUnique({
@@ -252,7 +255,7 @@ const updateProduct = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: 'Product updated successfully',
-            data: formatProductResponse(product)
+            data: formatProductResponse(product, { keyFeatures, whyChooseUs, procedure })
         });
     } catch (error) {
         next(error);
