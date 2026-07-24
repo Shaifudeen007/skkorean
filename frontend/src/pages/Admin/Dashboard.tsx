@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import api, { getImageUrl } from '../../services/api';
 import { Package, Image as ImageIcon, LayoutGrid, Plus, ArrowRight, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -132,7 +132,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold">₹{p.discountPrice || p.price}</p>
+                    <p className="text-sm font-bold">&#8377;{p.discountPrice || p.price}</p>
                   </div>
                 </div>
               ))}

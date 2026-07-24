@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+﻿import React, { useEffect, useState, useMemo } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 import { Plus, X, Upload, Search, Edit2, Trash2, Package, Loader2, AlertCircle, Image as ImageIcon, Layers } from 'lucide-react';
@@ -409,7 +409,7 @@ const AdminProducts = () => {
                 <div>
                   <label className="block text-sm font-medium text-foreground/80 mb-2">MRP Price</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 font-medium">₹</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 font-medium">&#8377;</span>
                     <input 
                       type="number" 
                       name="mrp"
@@ -423,7 +423,7 @@ const AdminProducts = () => {
                 <div>
                   <label className="block text-sm font-medium text-foreground/80 mb-2">Selling / Discount Price</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 font-medium">₹</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40 font-medium">&#8377;</span>
                     <input 
                       type="number" 
                       name="discountPrice"
@@ -656,9 +656,9 @@ const AdminProducts = () => {
                       <td className="px-6 py-4">
                         {p.discountPrice || p.price ? (
                           <div className="flex flex-col justify-center">
-                            <span className="font-bold text-foreground">₹{p.discountPrice || p.price}</span>
+                            <span className="font-bold text-foreground">&#8377;{p.discountPrice || p.price}</span>
                             {(p.mrp || p.originalPrice) && (
-                              <span className="line-through text-xs text-foreground/40 mt-0.5">₹{p.mrp || p.originalPrice}</span>
+                              <span className="line-through text-xs text-foreground/40 mt-0.5">&#8377;{p.mrp || p.originalPrice}</span>
                             )}
                           </div>
                         ) : (
