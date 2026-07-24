@@ -16,9 +16,15 @@ const formatProductResponse = (p, extraFields = {}) => {
         _id: p.id, // For frontend compatibility
         name: p.name,
         description: p.description,
-        keyFeatures: p.keyFeatures !== undefined ? p.keyFeatures : (extraFields.keyFeatures !== undefined ? extraFields.keyFeatures : null),
-        whyChooseUs: p.whyChooseUs !== undefined ? p.whyChooseUs : (extraFields.whyChooseUs !== undefined ? extraFields.whyChooseUs : null),
-        procedure: p.procedure !== undefined ? p.procedure : (extraFields.procedure !== undefined ? extraFields.procedure : null),
+        keyFeatures: p.keyFeatures !== undefined && p.keyFeatures !== null
+            ? p.keyFeatures
+            : (extraFields.keyFeatures !== undefined && extraFields.keyFeatures !== null ? extraFields.keyFeatures : null),
+        whyChooseUs: p.whyChooseUs !== undefined && p.whyChooseUs !== null
+            ? p.whyChooseUs
+            : (extraFields.whyChooseUs !== undefined && extraFields.whyChooseUs !== null ? extraFields.whyChooseUs : null),
+        procedure: p.procedure !== undefined && p.procedure !== null
+            ? p.procedure
+            : (extraFields.procedure !== undefined && extraFields.procedure !== null ? extraFields.procedure : null),
         category: p.category ? {
             id: p.category.id,
             name: p.category.name,
