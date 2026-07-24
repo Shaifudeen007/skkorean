@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, 
   MessageCircle, 
@@ -13,7 +13,9 @@ import {
   Shield,
   Award,
   Clock,
-  Sparkle
+  Sparkle,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import api, { getImageUrl } from '../services/api';
 import type { Product } from '../types/product';
@@ -23,6 +25,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -37,6 +40,16 @@ const ProductDetail = () => {
     };
     fetchProduct();
   }, [id]);
+
+  const productImages: string[] = useMemo(() => {
+    if (product?.images && product.images.length > 0) {
+      return product.images.map((img: any) => typeof img === 'string' ? img : img.url);
+    }
+    if (product?.image) {
+      return [product.image];
+    }
+    return [];
+  }, [product]);
 
   if (loading) {
     return (
@@ -117,26 +130,54 @@ const ProductDetail = () => {
         {/* Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-14">
           
-          {/* Image Showcase Panel (5 Cols on Desktop) */}
+          {/* Image Showcase & Interactive Gallery Slider Panel (5 Cols on Desktop) */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-5 relative group"
+            className="lg:col-span-5 relative flex flex-col gap-4"
           >
-            <div className="relative w-full min-h-[340px] sm:min-h-[400px] lg:max-h-[460px] aspect-square rounded-[1.5rem] overflow-hidden bg-gradient-to-b from-card to-background border border-border/70 shadow-2xl flex items-center justify-center p-3 sm:p-4">
+            <div className="relative w-full min-h-[340px] sm:min-h-[400px] lg:max-h-[460px] aspect-square rounded-[1.5rem] overflow-hidden bg-gradient-to-b from-card to-background border border-border/70 shadow-2xl flex items-center justify-center p-3 sm:p-4 group">
               
               {/* Studio Glow Ring */}
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/15 via-transparent to-primary/10 opacity-70 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               
-              <img 
-                src={product.image ? getImageUrl(product.image) : "https://via.placeholder.com/600x600?text=No+Image"} 
-                alt={product.name} 
-                className="w-full h-full max-h-[320px] sm:max-h-[380px] object-contain dark:mix-blend-screen group-hover:scale-105 transition-transform duration-700 ease-out"
-              />
+              <AnimatePresence mode="wait">
+                <motion.img 
+                  key={activeImageIndex}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  src={productImages.length > 0 ? getImageUrl(productImages[activeImageIndex]) : "https://via.placeholder.com/600x600?text=No+Image"} 
+                  alt={product.name} 
+                  className="w-full h-full max-h-[320px] sm:max-h-[380px] object-contain dark:mix-blend-screen group-hover:scale-105 transition-transform duration-700 ease-out z-10"
+                />
+              </AnimatePresence>
+
+              {/* Slider Next / Prev Controls if multiple images */}
+              {productImages.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setActiveImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-background/70 backdrop-blur-md text-foreground/80 hover:text-primary hover:bg-background border border-border/60 transition-all shadow-md active:scale-95"
+                    aria-label="Previous Image"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+
+                  <button
+                    onClick={() => setActiveImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-background/70 backdrop-blur-md text-foreground/80 hover:text-primary hover:bg-background border border-border/60 transition-all shadow-md active:scale-95"
+                    aria-label="Next Image"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
 
               {/* Floating Quality Badge */}
-              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center bg-card/90 backdrop-blur-md border border-border/60 rounded-2xl px-4 py-2.5 shadow-lg pointer-events-none">
+              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center bg-card/90 backdrop-blur-md border border-border/60 rounded-2xl px-4 py-2.5 shadow-lg pointer-events-none z-20">
                 <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
                   <Sparkle className="w-3.5 h-3.5 text-primary fill-primary" /> Premium Clinical Grade
                 </span>
@@ -145,6 +186,25 @@ const ProductDetail = () => {
                 </span>
               </div>
             </div>
+
+            {/* Gallery Thumbnail Selector (if multiple images exist) */}
+            {productImages.length > 1 && (
+              <div className="flex items-center justify-center gap-3 overflow-x-auto py-1">
+                {productImages.map((imgUrl, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all bg-card flex-shrink-0 ${
+                      activeImageIndex === idx
+                        ? 'border-primary ring-2 ring-primary/30 scale-105 shadow-lg'
+                        : 'border-border/60 opacity-60 hover:opacity-100 hover:border-primary/50'
+                    }`}
+                  >
+                    <img src={getImageUrl(imgUrl)} alt={`${product.name} thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </motion.div>
 
           {/* Product Header & Action Panel (7 Cols on Desktop) */}
@@ -235,7 +295,7 @@ const ProductDetail = () => {
           </motion.div>
         </div>
 
-        {/* Detailed Content Sections (No Cards, Clean Headings & Direct Content) */}
+        {/* Detailed Content Sections */}
         <div className="space-y-12 max-w-5xl mx-auto">
             
           {/* 1. Description */}

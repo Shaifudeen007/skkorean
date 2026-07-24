@@ -13,12 +13,18 @@ export interface Category {
   mainCategory?: MainCategory | { id: string; name: string };
 }
 
+export interface ProductImage {
+  id?: string;
+  url: string;
+}
+
 export interface Product {
   id?: string | number;
   _id?: string | number;
   name: string;
   category?: Category | string;
   image?: string;
+  images?: ProductImage[];
   mrp?: string | number;
   discountPrice?: string | number;
   price?: string | number;

@@ -33,11 +33,19 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
         {/* Glowing backdrop */}
         <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
         
-        <img 
-          src={product.image ? getImageUrl(product.image) : "https://via.placeholder.com/400x400?text=No+Image"} 
-          alt={product.name} 
-          className="w-full h-full object-cover rounded-[1rem] sm:rounded-[1.5rem] opacity-90 dark:mix-blend-screen group-hover:scale-110 transition-transform duration-700 ease-out" 
-        />
+        {(() => {
+          const displayImage = product.images && product.images.length > 0 
+            ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url)
+            : product.image;
+
+          return (
+            <img 
+              src={displayImage ? getImageUrl(displayImage) : "https://via.placeholder.com/400x400?text=No+Image"} 
+              alt={product.name} 
+              className="w-full h-full object-cover rounded-[1rem] sm:rounded-[1.5rem] opacity-90 dark:mix-blend-screen group-hover:scale-110 transition-transform duration-700 ease-out" 
+            />
+          );
+        })()}
       </div>
 
       {/* Content Area Below Image */}

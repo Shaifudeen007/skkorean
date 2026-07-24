@@ -6,11 +6,11 @@ const { protect } = require('../middleware/auth.middleware');
 
 router.route('/')
     .get(getProducts)
-    .post(protect, upload.single('image'), createProduct);
+    .post(protect, upload.array('images', 4), createProduct);
 
 router.route('/:id')
     .get(getProductById)
-    .put(protect, upload.single('image'), updateProduct)
+    .put(protect, upload.array('images', 4), updateProduct)
     .delete(protect, deleteProduct);
 
 module.exports = router;

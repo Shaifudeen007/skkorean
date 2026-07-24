@@ -32,8 +32,12 @@ const AdminProducts = () => {
     procedure: '',
   });
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  // Multiple image state (up to 4 images max)
+  const [existingImages, setExistingImages] = useState<Array<{ id: string; url: string }>>([]);
+  const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
+  const [newImageFiles, setNewImageFiles] = useState<File[]>([]);
+  const [newImagePreviews, setNewImagePreviews] = useState<string[]>([]);
+
   const [submitting, setSubmitting] = useState(false);
 
   const fetchCategoriesAndMain = async () => {
@@ -97,7 +101,6 @@ const AdminProducts = () => {
     const prodCat = product.category;
     const catId = typeof prodCat === 'object' && prodCat ? prodCat.id : (typeof prodCat === 'string' ? prodCat : '');
     
-    // Find associated main category id
     let mCatId = '';
     if (typeof prodCat === 'object' && prodCat) {
       mCatId = prodCat.mainCategoryId || prodCat.mainCategory?.id || '';
@@ -126,13 +129,15 @@ const AdminProducts = () => {
       procedure: product.procedure || '',
     });
     
-    if (product.image) {
-      setImagePreview(getImageUrl(product.image));
-    } else {
-      setImagePreview(null);
-    }
-    
-    setImageFile(null);
+    const existingImgs = (product.images && product.images.length > 0)
+      ? product.images.map((img: any) => typeof img === 'string' ? { id: img, url: img } : { id: img.id || img.url, url: img.url })
+      : (product.image ? [{ id: 'legacy', url: product.image }] : []);
+
+    setExistingImages(existingImgs);
+    setDeletedImageIds([]);
+    setNewImageFiles([]);
+    setNewImagePreviews([]);
+
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -141,7 +146,6 @@ const AdminProducts = () => {
     const { name, value } = e.target;
     
     if (name === 'mainCategoryId') {
-      // When Main Category changes, filter sub categories and reset categoryId
       const newSubCats = subCategories.filter(sc => (sc.mainCategoryId || sc.mainCategory?.id) === value);
       setFormData(prev => ({
         ...prev,
@@ -153,16 +157,48 @@ const AdminProducts = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  const activeExistingImages = useMemo(() => {
+    return existingImages.filter(img => !deletedImageIds.includes(img.id));
+  }, [existingImages, deletedImageIds]);
+
+  const totalImageCount = activeExistingImages.length + newImageFiles.length;
+
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFiles = Array.from(e.target.files);
+      const remainingSlots = 4 - totalImageCount;
+
+      if (remainingSlots <= 0) {
+        toast.error('Maximum 4 images allowed per product');
+        return;
+      }
+
+      const filesToProcess = selectedFiles.slice(0, remainingSlots);
+      if (selectedFiles.length > remainingSlots) {
+        toast.info(`Only ${remainingSlots} image(s) added to stay within the 4 image limit`);
+      }
+
+      setNewImageFiles(prev => [...prev, ...filesToProcess]);
+
+      filesToProcess.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setNewImagePreviews(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      e.target.value = '';
     }
+  };
+
+  const handleRemoveNewImage = (index: number) => {
+    setNewImageFiles(prev => prev.filter((_, i) => i !== index));
+    setNewImagePreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveExistingImage = (imageId: string) => {
+    setDeletedImageIds(prev => [...prev, imageId]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -182,8 +218,15 @@ const AdminProducts = () => {
       data.append('keyFeatures', formData.keyFeatures);
       data.append('whyChooseUs', formData.whyChooseUs);
       data.append('procedure', formData.procedure);
-      if (imageFile) {
-        data.append('image', imageFile);
+
+      // Append multi-image files
+      newImageFiles.forEach(file => {
+        data.append('images', file);
+      });
+
+      // Append deleted existing image IDs
+      if (deletedImageIds.length > 0) {
+        data.append('deletedImageIds', JSON.stringify(deletedImageIds));
       }
 
       if (editId) {
@@ -221,8 +264,10 @@ const AdminProducts = () => {
       whyChooseUs: '',
       procedure: '',
     });
-    setImageFile(null);
-    setImagePreview(null);
+    setExistingImages([]);
+    setDeletedImageIds([]);
+    setNewImageFiles([]);
+    setNewImagePreviews([]);
   };
 
   // Filter and Pagination Logic
@@ -264,6 +309,10 @@ const AdminProducts = () => {
         whyChooseUs: '',
         procedure: '',
       });
+      setExistingImages([]);
+      setDeletedImageIds([]);
+      setNewImageFiles([]);
+      setNewImagePreviews([]);
       setShowForm(true);
     }
   };
@@ -387,7 +436,7 @@ const AdminProducts = () => {
                 </div>
               </div>
 
-              {/* Description & Image Upload */}
+              {/* Description & Multiple Image Upload */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground/80 mb-2">Description <span className="text-red-500">*</span></label>
@@ -403,31 +452,65 @@ const AdminProducts = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-foreground/80 mb-2">Product Image</label>
-                  <div className="relative border-2 border-dashed border-border rounded-xl p-2 h-[164px] flex flex-col items-center justify-center text-foreground/60 hover:border-primary hover:text-primary transition-all cursor-pointer bg-background group overflow-hidden">
-                    <input 
-                      type="file" 
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-                    />
-                    
-                    {imagePreview ? (
-                      <div className="absolute inset-0 w-full h-full">
-                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <p className="text-white font-medium flex items-center gap-2"><Upload className="w-4 h-4" /> Change Image</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-foreground/80">
+                      Product Images <span className="text-xs text-foreground/50 font-normal">(Optional, Up to 4)</span>
+                    </label>
+                    <span className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full border border-primary/20">
+                      {totalImageCount} / 4 Images
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 min-h-[140px] p-2 bg-background border border-border rounded-xl">
+                    {/* Existing Uploaded Images */}
+                    {activeExistingImages.map((img) => (
+                      <div key={img.id} className="relative group rounded-lg overflow-hidden border border-border bg-card h-28 flex items-center justify-center">
+                        <img src={getImageUrl(img.url)} alt="Existing Product" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveExistingImage(img.id)}
+                            className="p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow"
+                            title="Delete Image"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
+                        <span className="absolute bottom-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded font-medium">Saved</span>
                       </div>
-                    ) : (
-                      <div className="flex flex-col items-center pointer-events-none">
-                        <Upload className="w-8 h-8 mb-3 text-primary/50 group-hover:text-primary transition-colors" />
-                        <span className="font-medium">Click to upload image</span>
-                        <div className="text-xs mt-2 text-foreground/40 text-center space-y-0.5">
-                          <p>Max size: 5 MB</p>
-                          <p>Recommended: 1200x1200 px</p>
-                          <p>Formats: JPG, PNG, WEBP</p>
+                    ))}
+
+                    {/* Newly Selected Image Previews */}
+                    {newImagePreviews.map((previewUrl, index) => (
+                      <div key={index} className="relative group rounded-lg overflow-hidden border border-primary/50 bg-card h-28 flex items-center justify-center">
+                        <img src={previewUrl} alt={`New upload ${index + 1}`} className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveNewImage(index)}
+                            className="p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow"
+                            title="Remove Image"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
                         </div>
+                        <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-[9px] px-1.5 py-0.5 rounded font-bold">New</span>
+                      </div>
+                    ))}
+
+                    {/* Add Image Box (if total count < 4) */}
+                    {totalImageCount < 4 && (
+                      <div className="relative border-2 border-dashed border-border rounded-lg h-28 flex flex-col items-center justify-center text-foreground/60 hover:border-primary hover:text-primary transition-all cursor-pointer bg-card/50 group">
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          multiple
+                          onChange={handleImagesChange}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        />
+                        <Upload className="w-5 h-5 mb-1 text-primary/60 group-hover:text-primary transition-colors" />
+                        <span className="text-xs font-semibold text-center px-1">Upload</span>
+                        <span className="text-[9px] text-foreground/40">Max 4</span>
                       </div>
                     )}
                   </div>
@@ -530,16 +613,29 @@ const AdminProducts = () => {
                 {paginatedProducts.map((p) => {
                   const subCatName = p.category?.name || 'Uncategorized';
                   const mainCatName = p.category?.mainCategory?.name || 'Machineries';
+                  
+                  const displayImg = p.images && p.images.length > 0 
+                    ? p.images[0].url 
+                    : p.image;
+
+                  const extraImageCount = p.images && p.images.length > 1 
+                    ? p.images.length - 1 
+                    : 0;
 
                   return (
                     <tr key={p.id || p._id} className="hover:bg-border/20 transition-colors group">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-lg bg-background border border-border overflow-hidden flex-shrink-0 flex items-center justify-center">
-                            {p.image ? (
-                              <img src={getImageUrl(p.image)} alt={p.name} className="w-full h-full object-cover" />
+                          <div className="relative w-12 h-12 rounded-lg bg-background border border-border overflow-hidden flex-shrink-0 flex items-center justify-center">
+                            {displayImg ? (
+                              <img src={getImageUrl(displayImg)} alt={p.name} className="w-full h-full object-cover" />
                             ) : (
                               <ImageIcon className="w-5 h-5 text-foreground/30" />
+                            )}
+                            {extraImageCount > 0 && (
+                              <span className="absolute bottom-0.5 right-0.5 bg-primary text-primary-foreground text-[9px] font-extrabold px-1 py-0.2 rounded-full leading-none shadow">
+                                +{extraImageCount}
+                              </span>
                             )}
                           </div>
                           <div className="max-w-[220px]">
