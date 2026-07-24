@@ -257,55 +257,54 @@ const Catalog = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.8 }}
-          className="flex flex-col items-center mb-10 text-center"
+          className="flex flex-col mb-10 w-full"
         >
-          <div className="relative inline-block">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground">
-              Product Catalog
-            </h2>
-            <svg className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-6 text-primary drop-shadow-[0_0_10px_rgba(212,175,55,0.6)]" viewBox="0 0 100 20" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <motion.path 
-                d="M5,15 Q50,25 95,5" 
-                stroke="url(#gold-gradient-svg-products)" 
-                strokeWidth="4" 
-                strokeLinecap="round" 
-                initial={{ pathLength: 0 }}
-                whileInView={{ pathLength: 1 }}
-                transition={{ duration: 1.5, ease: "easeInOut", delay: 0.3 }}
-                viewport={{ once: true }}
-              />
-              <defs>
-                <linearGradient id="gold-gradient-svg-products" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#F5D061" />
-                  <stop offset="50%" stopColor="#E6B830" />
-                  <stop offset="100%" stopColor="#B38600" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-          <p className="mt-10 text-foreground/70 max-w-2xl text-lg">
-            Explore our state-of-the-art collection of Korean aesthetic devices, PMU systems, machinery, and products.
-          </p>
+          <div className="flex flex-col md:flex-row justify-between items-center w-full gap-6">
+            <div className="relative inline-block text-center md:text-left">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground">
+                Product Catalog
+              </h2>
+              <svg className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-6 text-primary drop-shadow-[0_0_10px_rgba(212,175,55,0.6)] md:left-0 md:translate-x-0" viewBox="0 0 100 20" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <motion.path 
+                  d="M5,15 Q50,25 95,5" 
+                  stroke="url(#gold-gradient-svg-products)" 
+                  strokeWidth="4" 
+                  strokeLinecap="round" 
+                  initial={{ pathLength: 0 }}
+                  whileInView={{ pathLength: 1 }}
+                  transition={{ duration: 1.5, ease: "easeInOut", delay: 0.3 }}
+                  viewport={{ once: true }}
+                />
+                <defs>
+                  <linearGradient id="gold-gradient-svg-products" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#F5D061" />
+                    <stop offset="50%" stopColor="#E6B830" />
+                    <stop offset="100%" stopColor="#B38600" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
 
-          {/* Search Bar */}
-          <div className="w-full max-w-xl mt-6 px-2">
-            <div className="relative flex items-center">
-              <Search className="absolute left-4 w-5 h-5 text-foreground/50 pointer-events-none" />
-              <input 
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products, sub categories..."
-                className="w-full pl-12 pr-10 py-3 sm:py-3.5 bg-card/80 border border-border/60 rounded-full text-foreground text-sm sm:text-base placeholder:text-foreground/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-md shadow-black/5"
-              />
-              {searchQuery && (
-                <button 
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-4 p-1 text-foreground/40 hover:text-foreground text-xs font-bold rounded-full bg-border/50 hover:bg-border transition-colors"
-                >
-                  âœ•
-                </button>
-              )}
+            {/* Search Bar */}
+            <div className="w-full md:max-w-md px-2">
+              <div className="relative flex items-center">
+                <Search className="absolute left-4 w-5 h-5 text-foreground/50 pointer-events-none" />
+                <input 
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products, sub categories..."
+                  className="w-full pl-12 pr-10 py-3 sm:py-3.5 bg-card/80 border border-border/60 rounded-full text-foreground text-sm sm:text-base placeholder:text-foreground/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-md shadow-black/5"
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-4 p-1 text-foreground/40 hover:text-foreground text-xs font-bold rounded-full bg-border/50 hover:bg-border transition-colors"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -323,7 +322,7 @@ const Catalog = () => {
                   : 'bg-card border border-border/60 text-foreground/70 hover:border-primary/50 hover:text-primary'
               }`}
             >
-              <span>All Main Categories</span>
+              <span>All</span>
             </button>
 
             {safeMainCategories.map((mc: any) => (
@@ -349,7 +348,6 @@ const Catalog = () => {
           {/* 2. Sub Category Pills (Second Tier) */}
           {subCategoriesList.length > 1 && (
             <div className="flex flex-wrap justify-center gap-2 mt-4 w-full max-w-4xl pt-2">
-              <span className="text-xs font-semibold text-foreground/50 self-center mr-1">Sub Categories:</span>
               {subCategoriesList.map(subCat => (
                 <button
                   key={subCat}
@@ -363,7 +361,7 @@ const Catalog = () => {
                       : 'bg-card/60 border border-border/40 text-foreground/60 hover:text-foreground hover:border-border'
                   }`}
                 >
-                  {subCat === "All" ? "All Sub Categories" : subCat}
+                  {subCat === "All" ? "All" : subCat}
                 </button>
               ))}
             </div>
