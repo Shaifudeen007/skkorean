@@ -264,7 +264,7 @@ const Catalog = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.8 }}
-          className="flex flex-col mb-10 w-full sticky top-[60px] sm:top-[80px] z-40 bg-background/95 backdrop-blur-xl py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 border-b border-border/50 shadow-sm"
+          className="flex flex-col mb-10 w-full sticky top-[60px] sm:top-[80px] z-40 bg-transparent backdrop-blur-xl py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 border-b border-border/50 shadow-sm"
         >
           <div className="flex flex-col md:flex-row justify-between items-center w-full gap-6">
             <div className="relative inline-block text-center md:text-left overflow-visible">

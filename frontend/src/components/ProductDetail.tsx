@@ -71,7 +71,7 @@ const ProductDetail = () => {
         <h2 className="text-3xl font-bold mb-2 text-foreground">Product Not Found</h2>
         <p className="text-foreground/60 mb-6 max-w-sm">The product you are looking for does not exist or has been removed.</p>
         <button 
-          onClick={() => navigate('/#products')}
+          onClick={() => navigate('/catalog')}
           className="flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
         >
           <ArrowLeft className="w-5 h-5" /> Back to Catalog
@@ -113,7 +113,7 @@ const ProductDetail = () => {
         {/* Back Navigation Bar */}
         <div className="flex items-center justify-between mb-8">
           <button 
-            onClick={() => navigate('/#products')}
+            onClick={() => navigate('/catalog')}
             className="inline-flex items-center gap-2.5 text-foreground/70 hover:text-primary transition-all group font-medium text-sm sm:text-base"
           >
             <div className="p-2 rounded-full bg-card border border-border/60 group-hover:border-primary/50 group-hover:bg-primary/10 transition-all shadow-sm">

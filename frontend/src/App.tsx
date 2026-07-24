@@ -94,7 +94,7 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
                   <div key={link.name} className="relative group cursor-pointer flex items-center gap-1 text-foreground hover:text-primary transition-colors py-2">
                     <a href={link.href} className="text-foreground hover:text-primary transition-colors font-medium">{link.name}</a>
                     <ChevronDown className="w-4 h-4 text-foreground/70 group-hover:text-primary transition-transform group-hover:rotate-180" />
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-card/95 backdrop-blur-xl border border-border rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-transparent backdrop-blur-md border border-border/50 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
                       {MAIN_CATEGORIES_DROPDOWN.map(cat => (
                         <a 
                           key={cat.name} 
