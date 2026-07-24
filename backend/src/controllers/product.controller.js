@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Helper to format product object for API responses
-const formatProductResponse = (p, extraFields = {}) => {
+const formatProductResponse = (p) => {
     const formattedImages = (p.images && p.images.length > 0)
         ? p.images.map(img => ({ id: img.id, url: img.url }))
         : (p.image ? [{ id: 'legacy', url: p.image }] : []);
@@ -16,15 +16,9 @@ const formatProductResponse = (p, extraFields = {}) => {
         _id: p.id, // For frontend compatibility
         name: p.name,
         description: p.description,
-        keyFeatures: p.keyFeatures !== undefined && p.keyFeatures !== null
-            ? p.keyFeatures
-            : (extraFields.keyFeatures !== undefined && extraFields.keyFeatures !== null ? extraFields.keyFeatures : null),
-        whyChooseUs: p.whyChooseUs !== undefined && p.whyChooseUs !== null
-            ? p.whyChooseUs
-            : (extraFields.whyChooseUs !== undefined && extraFields.whyChooseUs !== null ? extraFields.whyChooseUs : null),
-        procedure: p.procedure !== undefined && p.procedure !== null
-            ? p.procedure
-            : (extraFields.procedure !== undefined && extraFields.procedure !== null ? extraFields.procedure : null),
+        keyFeatures: p.keyFeatures || null,
+        whyChooseUs: p.whyChooseUs || null,
+        procedure: p.procedure || null,
         category: p.category ? {
             id: p.category.id,
             name: p.category.name,
@@ -96,16 +90,9 @@ const getProductById = async (req, res, next) => {
             });
         }
 
-        const formattedProduct = formatProductResponse(product);
-
         res.json({
             success: true,
-            product: {
-                ...formattedProduct,
-                keyFeatures: product.keyFeatures !== undefined ? product.keyFeatures : formattedProduct.keyFeatures,
-                whyChooseUs: product.whyChooseUs !== undefined ? product.whyChooseUs : formattedProduct.whyChooseUs,
-                procedure: product.procedure !== undefined ? product.procedure : formattedProduct.procedure
-            }
+            product: formatProductResponse(product)
         });
 
     } catch (error) {
@@ -132,6 +119,9 @@ const createProduct = async (req, res, next) => {
             name,
             categoryId,
             description,
+            keyFeatures: keyFeatures || null,
+            whyChooseUs: whyChooseUs || null,
+            procedure: procedure || null,
             mrp: mrp ? parseFloat(mrp) : null,
             discountPrice: discountPrice ? parseFloat(discountPrice) : null,
             image: primaryImage
@@ -160,7 +150,7 @@ const createProduct = async (req, res, next) => {
         res.status(201).json({
             success: true,
             message: 'Product created successfully',
-            data: formatProductResponse(product, { keyFeatures, whyChooseUs, procedure })
+            data: formatProductResponse(product)
         });
     } catch (error) {
         next(error);
@@ -242,9 +232,12 @@ const updateProduct = async (req, res, next) => {
         const primaryImage = currentImages.length > 0 ? currentImages[0].url : (uploadedUrls.length === 0 && imagesToDelete.length > 0 ? null : existingProduct.image);
 
         const dataToUpdate = {
-            ...(name && { name }),
-            ...(categoryId && { categoryId }),
+            ...(name !== undefined && { name }),
+            ...(categoryId !== undefined && { categoryId }),
             ...(description !== undefined && { description }),
+            ...(keyFeatures !== undefined && { keyFeatures }),
+            ...(whyChooseUs !== undefined && { whyChooseUs }),
+            ...(procedure !== undefined && { procedure }),
             ...(mrp !== undefined && { mrp: mrp ? parseFloat(mrp) : null }),
             ...(discountPrice !== undefined && { discountPrice: discountPrice ? parseFloat(discountPrice) : null }),
             image: primaryImage
@@ -268,7 +261,7 @@ const updateProduct = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: 'Product updated successfully',
-            data: formatProductResponse(product, { keyFeatures, whyChooseUs, procedure })
+            data: formatProductResponse(product)
         });
     } catch (error) {
         next(error);
