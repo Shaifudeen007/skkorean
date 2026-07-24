@@ -117,7 +117,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary shrink-0" />
-                <a href="mailto:Skbeautyverseofficial@gmail.com" className="text-foreground/60 hover:text-primary transition-colors text-sm">Skbeautyverseofficial@gmail.com</a>
+                <a href="mailto:Skbeautyverseofficial@gmail.com" className="text-foreground/60 hover:text-primary transition-colors text-sm break-all">Skbeautyverseofficial@gmail.com</a>
               </div>
             </div>
           </motion.div>

@@ -185,13 +185,13 @@ const Products = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.8 }}
-          className="flex flex-col items-center mb-16 text-center"
+          className="flex flex-col md:flex-row justify-between items-center w-full gap-6 mb-16"
         >
-          <div className="relative inline-block">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground">
+          <div className="relative inline-block text-center md:text-left overflow-visible">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground whitespace-nowrap">
               Featured Categories
             </h2>
-            <svg className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-6 text-primary drop-shadow-[0_0_10px_rgba(212,175,55,0.6)]" viewBox="0 0 100 20" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-6 text-primary drop-shadow-[0_0_10px_rgba(212,175,55,0.6)] md:left-0 md:translate-x-0" viewBox="0 0 100 20" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
               <motion.path 
                 d="M5,15 Q50,25 95,5" 
                 stroke="url(#gold-gradient-svg-products)" 

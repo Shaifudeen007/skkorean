@@ -22,8 +22,8 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: index * 0.05 }}
-      className={`group relative w-full p-3 rounded-[1.5rem] border-[3px] bg-card/60 backdrop-blur-md hover:border-primary/50 hover:shadow-[0_0_30px_rgba(212&#8377;75,55,0.15)] transition-all duration-300 flex flex-col cursor-pointer ${
-        isSelected ? 'border-primary shadow-[0_0_20px_rgba(212&#8377;75,55,0.2)]' : 'border-border/50'
+      className={`group relative w-full p-3 rounded-[1.5rem] border-[3px] bg-card/60 backdrop-blur-md hover:border-primary/50 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] transition-all duration-300 flex flex-col cursor-pointer ${
+        isSelected ? 'border-primary shadow-[0_0_20px_rgba(212,175,55,0.2)]' : 'border-border/50'
       }`}
       onClick={() => navigate(`/product/${product._id || product.id}`)}
     >
@@ -267,13 +267,13 @@ const Catalog = () => {
           className="flex flex-col mb-10 w-full"
         >
           <div className="flex flex-col md:flex-row justify-between items-center w-full gap-6">
-            <div className="relative inline-block text-center md:text-left">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground whitespace-nowrap">
+            <div className="relative inline-block text-center md:text-left overflow-visible">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold tracking-tight text-foreground whitespace-nowrap">
                 Product Catalog
               </h2>
-              <svg className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-6 text-primary drop-shadow-[0_0_10px_rgba(212&#8377;75,55,0.6)] md:left-0 md:translate-x-0" viewBox="0 0 100 20" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-6 text-primary drop-shadow-[0_0_10px_rgba(212,175,55,0.6)] md:left-0 md:translate-x-0" viewBox="0 0 100 20" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <motion.path 
-                  d="M5&#8377;5 Q50,25 95,5" 
+                  d="M5,15 Q50,25 95,5" 
                   stroke="url(#gold-gradient-svg-products)" 
                   strokeWidth="4" 
                   strokeLinecap="round" 
@@ -396,7 +396,7 @@ const Catalog = () => {
                       <h3 className="text-3xl sm:text-4xl font-serif font-bold text-foreground pb-3">
                         {subCategoryName}
                       </h3>
-                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(212&#8377;75,55,0.4)]"></div>
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(212,175,55,0.4)]"></div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
@@ -423,7 +423,7 @@ const Catalog = () => {
           <div className="flex justify-center mt-12 pb-4">
             <button 
               onClick={() => setVisibleCount(prev => prev + 16)}
-              className="px-8 py-3 rounded-full bg-card border-2 border-primary/50 text-foreground font-semibold hover:border-primary hover:text-primary transition-all duration-300 shadow-[0_0_15px_rgba(212&#8377;75,55,0.1)] hover:shadow-[0_0_25px_rgba(212&#8377;75,55,0.3)]"
+              className="px-8 py-3 rounded-full bg-card border-2 border-primary/50 text-foreground font-semibold hover:border-primary hover:text-primary transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_25px_rgba(212,175,55,0.3)]"
             >
               Load More Products
             </button>

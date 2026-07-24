@@ -81,7 +81,7 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
-            <a href="/#home" className="text-xl sm:text-2xl font-bold tracking-tight">
+            <a href="/#home" className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight">
               <span className="bg-clip-text text-transparent bg-glare-gradient bg-[length:200%_auto] animate-text-glare">SK</span>
               <span className="bg-clip-text text-transparent bg-gold-gradient ml-1">Korean Aesthetic Technologies</span>
             </a>

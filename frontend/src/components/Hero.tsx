@@ -32,7 +32,7 @@ const Hero = ({ loading }: { loading: boolean }) => {
               initial={{ opacity: 0, y: 30 }}
               animate={loading ? { opacity: 0, y: 30 } : { opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-serif font-bold tracking-tight mb-6 leading-[1.1] w-full"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight mb-6 leading-[1.1] w-full"
             >
               <span className="block text-foreground">Advanced Korean</span>
               <span className="block text-transparent bg-clip-text bg-gold-gradient animate-text-glare pb-2 relative inline-block">
