@@ -200,11 +200,11 @@ const HomePage = ({ loading, setLoading }: { loading: boolean, setLoading: (l: b
     </AnimatePresence>
     <main id="home">
       <Hero loading={loading} />
+      <Testimonials />
       <Portfolio />
       <Products />
       <AboutUs />
       <WhyChooseUs />
-      <Testimonials />
       <ContactUs />
     </main>
   </>

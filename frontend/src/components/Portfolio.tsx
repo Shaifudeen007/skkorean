@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, MapPin } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, MapPin, X } from 'lucide-react';
 import api, { getImageUrl } from '../services/api';
 
 const Portfolio = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProject, setSelectedProject] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -72,6 +73,7 @@ const Portfolio = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
+              onClick={() => setSelectedProject(project)}
               className="group relative h-[350px] sm:h-[400px] rounded-[2rem] overflow-hidden cursor-pointer"
             >
               {/* Background Image */}
@@ -111,6 +113,55 @@ const Portfolio = () => {
         </div>
 
       </div>
+      
+      {/* Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProject(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-5xl w-full max-h-[90vh] rounded-2xl overflow-hidden bg-card border border-border/50 shadow-2xl flex flex-col"
+            >
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <div className="relative w-full h-[60vh] sm:h-[70vh] bg-black">
+                <img
+                  src={getImageUrl(selectedProject.url)}
+                  alt={selectedProject.title || 'Gallery Image'}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              {(selectedProject.title || selectedProject.description) && (
+                <div className="p-6 bg-card">
+                  {selectedProject.title && (
+                    <h3 className="text-2xl font-serif font-bold text-foreground mb-2">
+                      {selectedProject.title}
+                    </h3>
+                  )}
+                  {selectedProject.description && (
+                    <p className="text-foreground/70 text-sm sm:text-base">
+                      {selectedProject.description}
+                    </p>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
