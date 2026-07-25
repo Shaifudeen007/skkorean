@@ -7,6 +7,7 @@ import Hero from './components/Hero';
 import AboutUs from './components/AboutUs';
 import Products from './components/Products';
 import WhyChooseUs from './components/WhyChooseUs';
+import Testimonials from './components/Testimonials';
 import Portfolio from './components/Portfolio';
 import ContactUs from './components/ContactUs';
 import Footer from './components/Footer';
@@ -203,6 +204,7 @@ const HomePage = ({ loading, setLoading }: { loading: boolean, setLoading: (l: b
       <Products />
       <AboutUs />
       <WhyChooseUs />
+      <Testimonials />
       <ContactUs />
     </main>
   </>

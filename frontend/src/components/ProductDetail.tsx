@@ -24,6 +24,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
+  const [otherProducts, setOtherProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
@@ -32,6 +33,19 @@ const ProductDetail = () => {
       try {
         const { data } = await api.get(`/products/${id}`);
         setProduct(data.product || data);
+      } catch (error) {
+        // Handled silently
+      }
+
+      try {
+        const { data } = await api.get('/products');
+        let productsList = Array.isArray(data) 
+          ? data 
+          : (Array.isArray(data?.products) ? data.products : (Array.isArray(data?.data) ? data.data : []));
+        
+        productsList = productsList.filter((p: any) => p._id !== id && p.id !== id);
+        // Shuffle or just take first 4
+        setOtherProducts(productsList.sort(() => 0.5 - Math.random()).slice(0, 4));
       } catch (error) {
         // Handled silently
       } finally {
@@ -394,6 +408,64 @@ const ProductDetail = () => {
           )}
 
         </div>
+
+        {/* Other Products Section */}
+        {otherProducts.length > 0 && (
+          <div className="mt-20 pt-10 border-t border-border/50 max-w-7xl mx-auto">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl sm:text-4xl font-serif font-bold text-foreground">Other Products</h2>
+              <div className="w-20 h-1.5 bg-primary mx-auto mt-4 rounded-full shadow-[0_0_8px_rgba(212,175,55,0.4)]"></div>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {otherProducts.map((p: any, i) => (
+                <motion.div 
+                  key={p._id || p.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className="group relative bg-card/60 rounded-[1.5rem] border-[2px] border-border/50 p-3 hover:border-primary/50 hover:shadow-xl transition-all cursor-pointer flex flex-col"
+                  onClick={() => navigate(`/product/${p._id || p.id}`)}
+                >
+                  <div className="relative w-full h-[200px] rounded-[1rem] bg-primary/5 overflow-hidden mb-4">
+                    {(() => {
+                      const displayImage = p.images && p.images.length > 0 
+                        ? (typeof p.images[0] === 'string' ? p.images[0] : p.images[0].url)
+                        : p.image;
+                      return (
+                        <img 
+                          src={displayImage ? getImageUrl(displayImage) : "https://via.placeholder.com/400x400?text=No+Image"} 
+                          alt={p.name} 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out mix-blend-screen" 
+                        />
+                      );
+                    })()}
+                  </div>
+                  <div className="flex-grow flex flex-col justify-between px-2 pb-2">
+                    <div>
+                      <h3 className="font-outfit font-bold text-lg text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-1">{p.name}</h3>
+                      <span className="text-xs text-primary font-semibold block mb-2">
+                        {p.category?.name || p.category || 'Uncategorized'}
+                      </span>
+                    </div>
+                    <div>
+                      {(p.price || p.discountPrice) ? (
+                        <span className="font-outfit font-bold text-lg text-foreground">
+                          &#8377;{p.discountPrice || p.price}
+                        </span>
+                      ) : (
+                        <span className="font-outfit font-bold text-sm text-primary uppercase tracking-wider">
+                          Enquire
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
