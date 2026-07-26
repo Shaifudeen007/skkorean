@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, MessageCircle, ShieldCheck, Award, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Hero = ({ loading }: { loading: boolean }) => {
   return (
@@ -59,9 +60,9 @@ const Hero = ({ loading }: { loading: boolean }) => {
               transition={{ duration: 0.8, delay: 0.8 }}
               className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
             >
-              <a href="/catalog" className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-[1.5rem] bg-gold-gradient text-white font-semibold shadow-[0_10px_30px_rgba(212,175,55,0.25)] hover:shadow-[0_15px_40px_rgba(212,175,55,0.4)] transition-all transform hover:-translate-y-1">
+              <Link to="/catalog" className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-[1.5rem] bg-gold-gradient text-white font-semibold shadow-[0_10px_30px_rgba(212,175,55,0.25)] hover:shadow-[0_15px_40px_rgba(212,175,55,0.4)] transition-all transform hover:-translate-y-1">
                 Explore Machines
-              </a>
+              </Link>
               <a href="https://wa.me/918610345830" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[1.5rem] border-2 border-border bg-card/50 backdrop-blur-md text-foreground hover:border-primary/50 hover:bg-card transition-all group">
                 <MessageCircle className="w-5 h-5 text-[#25D366] group-hover:scale-110 transition-transform" />
                 <span>WhatsApp Enquiry</span>
