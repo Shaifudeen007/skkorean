@@ -295,10 +295,31 @@ const Catalog = () => {
             {/* Controls (Search & Dropdowns) */}
             <div className="flex flex-col lg:flex-row items-center justify-end w-full gap-4 px-2">
               
-              {/* Category Dropdowns */}
+              {/* Category Selection */}
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-                {/* Main Category */}
-                <div className="relative w-full sm:w-auto min-w-[160px]">
+                {/* Mobile Main Categories Tabs */}
+                <div className="w-full overflow-x-auto sm:hidden pb-2 -mb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  <div className="flex gap-2 min-w-max px-1">
+                    <button 
+                      onClick={() => { setActiveMainCategory("All"); setActiveSubCategory("All"); setVisibleCount(16); }}
+                      className={`px-4 py-2.5 rounded-full text-sm font-semibold transition-colors border shadow-sm ${activeMainCategory === "All" ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 border-border/60 text-foreground"}`}
+                    >
+                      All Categories
+                    </button>
+                    {safeMainCategories.map((mc: any) => (
+                      <button 
+                        key={mc.id || mc.name}
+                        onClick={() => { setActiveMainCategory(mc.name); setActiveSubCategory("All"); setVisibleCount(16); }}
+                        className={`px-4 py-2.5 rounded-full text-sm font-semibold transition-colors border shadow-sm ${activeMainCategory === mc.name ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 border-border/60 text-foreground"}`}
+                      >
+                        {mc.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Desktop Main Category Dropdown */}
+                <div className="hidden sm:block relative w-full sm:w-auto min-w-[160px]">
                   <Select
                     value={activeMainCategory}
                     onValueChange={(val) => {
@@ -319,9 +340,26 @@ const Catalog = () => {
                   </Select>
                 </div>
 
-                {/* Sub Category */}
+                {/* Mobile Sub Categories Tabs */}
                 {subCategoriesList.length > 1 && (
-                  <div className="relative w-full sm:w-auto min-w-[160px]">
+                  <div className="w-full overflow-x-auto sm:hidden pb-1 -mb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    <div className="flex gap-2 min-w-max px-1">
+                      {subCategoriesList.map(subCat => (
+                        <button 
+                          key={subCat}
+                          onClick={() => { setActiveSubCategory(subCat); setVisibleCount(16); }}
+                          className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors border shadow-sm ${activeSubCategory === subCat ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 border-border/60 text-foreground"}`}
+                        >
+                          {subCat === "All" ? "All Sub Categories" : subCat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Desktop Sub Category Dropdown */}
+                {subCategoriesList.length > 1 && (
+                  <div className="hidden sm:block relative w-full sm:w-auto min-w-[160px]">
                     <Select
                       value={activeSubCategory}
                       onValueChange={(val) => {
