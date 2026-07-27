@@ -52,7 +52,10 @@ const getProducts = async (req, res, next) => {
                     }
                 },
                 images: {
-                    orderBy: { createdAt: 'asc' }
+                    orderBy: [
+                        { isCover: 'desc' },
+                        { createdAt: 'asc' }
+                    ]
                 }
             }
         });
@@ -79,7 +82,10 @@ const getProductById = async (req, res, next) => {
                     }
                 },
                 images: {
-                    orderBy: { createdAt: 'asc' }
+                    orderBy: [
+                        { isCover: 'desc' },
+                        { createdAt: 'asc' }
+                    ]
                 }
             }
         });
@@ -143,7 +149,10 @@ const createProduct = async (req, res, next) => {
                     }
                 },
                 images: {
-                    orderBy: { createdAt: 'asc' }
+                    orderBy: [
+                        { isCover: 'desc' },
+                        { createdAt: 'asc' }
+                    ]
                 }
             }
         });
@@ -228,7 +237,10 @@ const updateProduct = async (req, res, next) => {
         // Retrieve current images to determine primary image
         let currentImages = await prisma.productImage.findMany({
             where: { productId: productId },
-            orderBy: { createdAt: 'asc' }
+            orderBy: [
+                { isCover: 'desc' },
+                { createdAt: 'asc' }
+            ]
         });
 
         let newCoverId = null;
@@ -287,7 +299,10 @@ const updateProduct = async (req, res, next) => {
                     }
                 },
                 images: {
-                    orderBy: { createdAt: 'asc' }
+                    orderBy: [
+                        { isCover: 'desc' },
+                        { createdAt: 'asc' }
+                    ]
                 }
             }
         });

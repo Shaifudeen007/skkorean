@@ -57,12 +57,7 @@ const ProductDetail = () => {
 
   const productImages: string[] = useMemo(() => {
     if (product?.images && product.images.length > 0) {
-      const sortedImages = [...product.images].sort((a: any, b: any) => {
-        if (a.isCover && !b.isCover) return -1;
-        if (!a.isCover && b.isCover) return 1;
-        return 0;
-      });
-      return sortedImages.map((img: any) => typeof img === 'string' ? img : img.url);
+      return product.images.map((img: any) => typeof img === 'string' ? img : img.url);
     }
     if (product?.image) {
       return [product.image];
