@@ -472,6 +472,7 @@ const AdminProducts = () => {
                     <label className="block text-sm font-medium text-foreground/80">
                       Product Images <span className="text-xs text-foreground/50 font-normal">(Optional, Up to 4)</span>
                     </label>
+                    <span className="text-xs text-foreground/50 block mt-1">The first uploaded image becomes the Cover Image by default. You can change it anytime.</span>
                     <span className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-0.5 rounded-full border border-primary/20">
                       {totalImageCount} / 4 Images
                     </span>
@@ -480,7 +481,14 @@ const AdminProducts = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 min-h-[140px] p-2 bg-background border border-border rounded-xl">
                     {/* Existing Uploaded Images */}
                     {activeExistingImages.map((img) => (
-                      <div key={img.id} className="relative group rounded-lg overflow-hidden border border-border bg-card h-28 flex items-center justify-center">
+                      <div 
+                        key={img.id} 
+                        className={`relative group rounded-lg overflow-hidden bg-card h-28 flex items-center justify-center transition-all duration-300 ${
+                          img.id === coverImageId 
+                            ? 'border-[3px] border-[#16A34A] shadow-[0_0_15px_rgba(22,163,74,0.4)] scale-[1.02]' 
+                            : 'border border-border'
+                        }`}
+                      >
                         <img src={getImageUrl(img.url)} alt="Existing Product" className="w-full h-full object-cover" />
                         
                         <div className={`absolute inset-0 bg-black/60 transition-opacity flex items-center justify-center gap-2 ${img.id === coverImageId ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`}>
@@ -488,9 +496,9 @@ const AdminProducts = () => {
                             <button
                               type="button"
                               onClick={(e) => { e.preventDefault(); setCoverImageId(img.id); setCoverImageIndex(null); }}
-                              className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors shadow"
+                              className="px-2 py-1 bg-[#16A34A] text-white text-xs rounded hover:bg-green-600 transition-colors shadow"
                             >
-                              Cover
+                              Set as Cover
                             </button>
                           )}
                           <button
@@ -502,12 +510,15 @@ const AdminProducts = () => {
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-                        <span className="absolute bottom-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded font-medium">
-                          {img.id === coverImageId ? 'Cover' : 'Saved'}
-                        </span>
+                        {img.id !== coverImageId && (
+                          <span className="absolute bottom-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded font-medium">
+                            Saved
+                          </span>
+                        )}
                         {img.id === coverImageId && (
-                          <div className="absolute top-1 right-1 bg-amber-500 text-white p-1 rounded-full shadow">
+                          <div className="absolute top-2 left-2 bg-[#16A34A] text-white px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md z-10">
                             <Star className="w-3 h-3 fill-current" />
+                            <span className="text-[10px] font-bold tracking-wide uppercase">Cover Image</span>
                           </div>
                         )}
                       </div>
@@ -515,7 +526,14 @@ const AdminProducts = () => {
 
                     {/* Newly Selected Image Previews */}
                     {newImagePreviews.map((previewUrl, index) => (
-                      <div key={index} className="relative group rounded-lg overflow-hidden border border-primary/50 bg-card h-28 flex items-center justify-center">
+                      <div 
+                        key={index} 
+                        className={`relative group rounded-lg overflow-hidden bg-card h-28 flex items-center justify-center transition-all duration-300 ${
+                          index === coverImageIndex 
+                            ? 'border-[3px] border-[#16A34A] shadow-[0_0_15px_rgba(22,163,74,0.4)] scale-[1.02]' 
+                            : 'border border-primary/50'
+                        }`}
+                      >
                         <img src={previewUrl} alt={`New upload ${index + 1}`} className="w-full h-full object-cover" />
                         
                         <div className={`absolute inset-0 bg-black/60 transition-opacity flex items-center justify-center gap-2 ${index === coverImageIndex ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`}>
@@ -523,9 +541,9 @@ const AdminProducts = () => {
                             <button
                               type="button"
                               onClick={(e) => { e.preventDefault(); setCoverImageIndex(index); setCoverImageId(null); }}
-                              className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors shadow"
+                              className="px-2 py-1 bg-[#16A34A] text-white text-xs rounded hover:bg-green-600 transition-colors shadow"
                             >
-                              Cover
+                              Set as Cover
                             </button>
                           )}
                           <button
@@ -537,12 +555,15 @@ const AdminProducts = () => {
                             <X className="w-4 h-4" />
                           </button>
                         </div>
-                        <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-[9px] px-1.5 py-0.5 rounded font-bold">
-                          {index === coverImageIndex ? 'Cover' : 'New'}
-                        </span>
+                        {index !== coverImageIndex && (
+                          <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-[9px] px-1.5 py-0.5 rounded font-bold">
+                            New
+                          </span>
+                        )}
                         {index === coverImageIndex && (
-                          <div className="absolute top-1 right-1 bg-amber-500 text-white p-1 rounded-full shadow">
+                          <div className="absolute top-2 left-2 bg-[#16A34A] text-white px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md z-10">
                             <Star className="w-3 h-3 fill-current" />
+                            <span className="text-[10px] font-bold tracking-wide uppercase">Cover Image</span>
                           </div>
                         )}
                       </div>
