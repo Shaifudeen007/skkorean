@@ -16,6 +16,7 @@ export interface Category {
 export interface ProductImage {
   id?: string;
   url: string;
+  isCover?: boolean;
 }
 
 export interface Product {

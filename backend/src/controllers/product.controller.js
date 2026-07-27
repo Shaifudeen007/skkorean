@@ -6,10 +6,11 @@ const path = require('path');
 // Helper to format product object for API responses
 const formatProductResponse = (p) => {
     const formattedImages = (p.images && p.images.length > 0)
-        ? p.images.map(img => ({ id: img.id, url: img.url }))
-        : (p.image ? [{ id: 'legacy', url: p.image }] : []);
+        ? p.images.map(img => ({ id: img.id, url: img.url, isCover: img.isCover }))
+        : (p.image ? [{ id: 'legacy', url: p.image, isCover: true }] : []);
 
-    const primaryImage = formattedImages.length > 0 ? formattedImages[0].url : p.image;
+    const coverImage = p.images ? p.images.find(img => img.isCover) : null;
+    const primaryImage = coverImage ? coverImage.url : (formattedImages.length > 0 ? formattedImages[0].url : p.image);
 
     return {
         id: p.id,
@@ -129,7 +130,7 @@ const createProduct = async (req, res, next) => {
 
         if (uploadedUrls.length > 0) {
             productData.images = {
-                create: uploadedUrls.map(url => ({ url }))
+                create: uploadedUrls.map((url, index) => ({ url, isCover: index === 0 }))
             };
         }
 
@@ -161,7 +162,7 @@ const createProduct = async (req, res, next) => {
 // @route   PUT /api/products/:id
 const updateProduct = async (req, res, next) => {
     try {
-        const { name, categoryId, mrp, discountPrice, description, keyFeatures, whyChooseUs, procedure, deletedImageIds } = req.body;
+        const { name, categoryId, mrp, discountPrice, description, keyFeatures, whyChooseUs, procedure, deletedImageIds, coverImageId, coverImageIndex } = req.body;
         const productId = req.params.id;
 
         const existingProduct = await prisma.product.findUnique({
@@ -218,18 +219,51 @@ const updateProduct = async (req, res, next) => {
             await prisma.productImage.createMany({
                 data: uploadedUrls.map(url => ({
                     productId: productId,
-                    url: url
+                    url: url,
+                    isCover: false // We will set the correct cover below
                 }))
             });
         }
 
         // Retrieve current images to determine primary image
-        const currentImages = await prisma.productImage.findMany({
+        let currentImages = await prisma.productImage.findMany({
             where: { productId: productId },
             orderBy: { createdAt: 'asc' }
         });
 
-        const primaryImage = currentImages.length > 0 ? currentImages[0].url : (uploadedUrls.length === 0 && imagesToDelete.length > 0 ? null : existingProduct.image);
+        let newCoverId = null;
+        if (coverImageId) {
+            newCoverId = coverImageId;
+        } else if (coverImageIndex !== undefined && Number(coverImageIndex) < uploadedUrls.length) {
+            const newCoverUrl = uploadedUrls[Number(coverImageIndex)];
+            const matchedImg = currentImages.find(img => img.url === newCoverUrl);
+            if (matchedImg) newCoverId = matchedImg.id;
+        }
+
+        if (!newCoverId && currentImages.length > 0) {
+            const existingCover = currentImages.find(img => img.isCover);
+            if (existingCover) {
+                newCoverId = existingCover.id;
+            } else {
+                newCoverId = currentImages[0].id;
+            }
+        }
+
+        if (newCoverId) {
+            await prisma.productImage.updateMany({
+                where: { productId: productId, id: { not: newCoverId } },
+                data: { isCover: false }
+            });
+            await prisma.productImage.update({
+                where: { id: newCoverId },
+                data: { isCover: true }
+            });
+            // Update currentImages array for primaryImage selection
+            currentImages = currentImages.map(img => ({ ...img, isCover: img.id === newCoverId }));
+        }
+
+        const finalCoverImage = currentImages.find(img => img.isCover) || currentImages[0];
+        const primaryImage = finalCoverImage ? finalCoverImage.url : (uploadedUrls.length === 0 && imagesToDelete.length > 0 ? null : existingProduct.image);
 
         const dataToUpdate = {
             ...(name !== undefined && { name }),

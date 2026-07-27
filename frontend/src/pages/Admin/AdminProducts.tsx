@@ -1,7 +1,7 @@
-﻿import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
-import { Plus, X, Upload, Search, Edit2, Trash2, Package, Loader2, AlertCircle, Image as ImageIcon, Layers } from 'lucide-react';
+import { Plus, X, Upload, Search, Edit2, Trash2, Package, Loader2, AlertCircle, Image as ImageIcon, Layers, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getImageUrl } from '../../services/api';
 
@@ -33,10 +33,13 @@ const AdminProducts = () => {
   });
 
   // Multiple image state (up to 4 images max)
-  const [existingImages, setExistingImages] = useState<Array<{ id: string; url: string }>>([]);
+  const [existingImages, setExistingImages] = useState<Array<{ id: string; url: string; isCover?: boolean }>>([]);
   const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
   const [newImageFiles, setNewImageFiles] = useState<File[]>([]);
   const [newImagePreviews, setNewImagePreviews] = useState<string[]>([]);
+  
+  const [coverImageId, setCoverImageId] = useState<string | null>(null);
+  const [coverImageIndex, setCoverImageIndex] = useState<number | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -130,10 +133,13 @@ const AdminProducts = () => {
     });
     
     const existingImgs = (product.images && product.images.length > 0)
-      ? product.images.map((img: any) => typeof img === 'string' ? { id: img, url: img } : { id: img.id || img.url, url: img.url })
-      : (product.image ? [{ id: 'legacy', url: product.image }] : []);
+      ? product.images.map((img: any) => typeof img === 'string' ? { id: img, url: img, isCover: false } : { id: img.id || img.url, url: img.url, isCover: img.isCover })
+      : (product.image ? [{ id: 'legacy', url: product.image, isCover: true }] : []);
 
     setExistingImages(existingImgs);
+    const coverImg = existingImgs.find(i => i.isCover);
+    setCoverImageId(coverImg ? coverImg.id : null);
+    setCoverImageIndex(null);
     setDeletedImageIds([]);
     setNewImageFiles([]);
     setNewImagePreviews([]);
@@ -195,10 +201,13 @@ const AdminProducts = () => {
   const handleRemoveNewImage = (index: number) => {
     setNewImageFiles(prev => prev.filter((_, i) => i !== index));
     setNewImagePreviews(prev => prev.filter((_, i) => i !== index));
+    if (coverImageIndex === index) setCoverImageIndex(null);
+    else if (coverImageIndex !== null && coverImageIndex > index) setCoverImageIndex(coverImageIndex - 1);
   };
 
   const handleRemoveExistingImage = (imageId: string) => {
     setDeletedImageIds(prev => [...prev, imageId]);
+    if (coverImageId === imageId) setCoverImageId(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -228,6 +237,9 @@ const AdminProducts = () => {
       if (deletedImageIds.length > 0) {
         data.append('deletedImageIds', JSON.stringify(deletedImageIds));
       }
+
+      if (coverImageId) data.append('coverImageId', coverImageId);
+      if (coverImageIndex !== null) data.append('coverImageIndex', coverImageIndex.toString());
 
       if (editId) {
         await api.put(`/products/${editId}`, data, {
@@ -268,6 +280,8 @@ const AdminProducts = () => {
     setDeletedImageIds([]);
     setNewImageFiles([]);
     setNewImagePreviews([]);
+    setCoverImageId(null);
+    setCoverImageIndex(null);
   };
 
   // Filter and Pagination Logic
@@ -313,6 +327,8 @@ const AdminProducts = () => {
       setDeletedImageIds([]);
       setNewImageFiles([]);
       setNewImagePreviews([]);
+      setCoverImageId(null);
+      setCoverImageIndex(null);
       setShowForm(true);
     }
   };
@@ -466,7 +482,17 @@ const AdminProducts = () => {
                     {activeExistingImages.map((img) => (
                       <div key={img.id} className="relative group rounded-lg overflow-hidden border border-border bg-card h-28 flex items-center justify-center">
                         <img src={getImageUrl(img.url)} alt="Existing Product" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        
+                        <div className={`absolute inset-0 bg-black/60 transition-opacity flex items-center justify-center gap-2 ${img.id === coverImageId ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`}>
+                          {img.id !== coverImageId && (
+                            <button
+                              type="button"
+                              onClick={(e) => { e.preventDefault(); setCoverImageId(img.id); setCoverImageIndex(null); }}
+                              className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors shadow"
+                            >
+                              Cover
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => handleRemoveExistingImage(img.id)}
@@ -476,7 +502,14 @@ const AdminProducts = () => {
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-                        <span className="absolute bottom-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded font-medium">Saved</span>
+                        <span className="absolute bottom-1 left-1 bg-black/70 text-white text-[9px] px-1.5 py-0.5 rounded font-medium">
+                          {img.id === coverImageId ? 'Cover' : 'Saved'}
+                        </span>
+                        {img.id === coverImageId && (
+                          <div className="absolute top-1 right-1 bg-amber-500 text-white p-1 rounded-full shadow">
+                            <Star className="w-3 h-3 fill-current" />
+                          </div>
+                        )}
                       </div>
                     ))}
 
@@ -484,7 +517,17 @@ const AdminProducts = () => {
                     {newImagePreviews.map((previewUrl, index) => (
                       <div key={index} className="relative group rounded-lg overflow-hidden border border-primary/50 bg-card h-28 flex items-center justify-center">
                         <img src={previewUrl} alt={`New upload ${index + 1}`} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        
+                        <div className={`absolute inset-0 bg-black/60 transition-opacity flex items-center justify-center gap-2 ${index === coverImageIndex ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`}>
+                          {index !== coverImageIndex && (
+                            <button
+                              type="button"
+                              onClick={(e) => { e.preventDefault(); setCoverImageIndex(index); setCoverImageId(null); }}
+                              className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors shadow"
+                            >
+                              Cover
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => handleRemoveNewImage(index)}
@@ -494,7 +537,14 @@ const AdminProducts = () => {
                             <X className="w-4 h-4" />
                           </button>
                         </div>
-                        <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-[9px] px-1.5 py-0.5 rounded font-bold">New</span>
+                        <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-[9px] px-1.5 py-0.5 rounded font-bold">
+                          {index === coverImageIndex ? 'Cover' : 'New'}
+                        </span>
+                        {index === coverImageIndex && (
+                          <div className="absolute top-1 right-1 bg-amber-500 text-white p-1 rounded-full shadow">
+                            <Star className="w-3 h-3 fill-current" />
+                          </div>
+                        )}
                       </div>
                     ))}
 
