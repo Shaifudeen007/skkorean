@@ -131,7 +131,8 @@ const Catalog = () => {
   const [activeSubCategory, setActiveSubCategory] = useState<string>("All");
   
   const [searchQuery, setSearchQuery] = useState("");
-  const [visibleCount, setVisibleCount] = useState(16);
+  const [visibleCounts, setVisibleCounts] = useState<Record<string, number>>({});
+  const getVisibleCount = (subCat: string) => visibleCounts[subCat] || 8;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -156,7 +157,7 @@ const Catalog = () => {
       const decodedParam = decodeURIComponent(mainParam);
       setActiveMainCategory(decodedParam);
       setActiveSubCategory("All");
-      setVisibleCount(16);
+      setVisibleCounts({});
 
       // Smooth scroll to products section
       setTimeout(() => {
@@ -301,7 +302,7 @@ const Catalog = () => {
                 <div className="w-full overflow-x-auto sm:hidden pb-2 -mb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   <div className="flex gap-2 min-w-max px-1">
                     <button 
-                      onClick={() => { setActiveMainCategory("All"); setActiveSubCategory("All"); setVisibleCount(16); }}
+                      onClick={() => { setActiveMainCategory("All"); setActiveSubCategory("All"); setVisibleCounts({}); }}
                       className={`px-4 py-2.5 rounded-full text-sm font-semibold transition-colors border shadow-sm ${activeMainCategory === "All" ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 border-border/60 text-foreground"}`}
                     >
                       All Categories
@@ -309,7 +310,7 @@ const Catalog = () => {
                     {safeMainCategories.map((mc: any) => (
                       <button 
                         key={mc.id || mc.name}
-                        onClick={() => { setActiveMainCategory(mc.name); setActiveSubCategory("All"); setVisibleCount(16); }}
+                        onClick={() => { setActiveMainCategory(mc.name); setActiveSubCategory("All"); setVisibleCounts({}); }}
                         className={`px-4 py-2.5 rounded-full text-sm font-semibold transition-colors border shadow-sm ${activeMainCategory === mc.name ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 border-border/60 text-foreground"}`}
                       >
                         {mc.name}
@@ -325,7 +326,7 @@ const Catalog = () => {
                     onValueChange={(val) => {
                       setActiveMainCategory(val);
                       setActiveSubCategory("All");
-                      setVisibleCount(16);
+                      setVisibleCounts({});
                     }}
                   >
                     <SelectTrigger className="w-full bg-card/80 border-border/60 font-semibold rounded-full px-4 py-3 h-auto shadow-md shadow-black/5 text-foreground">
@@ -347,7 +348,7 @@ const Catalog = () => {
                       {subCategoriesList.map(subCat => (
                         <button 
                           key={subCat}
-                          onClick={() => { setActiveSubCategory(subCat); setVisibleCount(16); }}
+                          onClick={() => { setActiveSubCategory(subCat); setVisibleCounts({}); }}
                           className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors border shadow-sm ${activeSubCategory === subCat ? "bg-primary text-primary-foreground border-primary" : "bg-card/80 border-border/60 text-foreground"}`}
                         >
                           {subCat === "All" ? "All Sub Categories" : subCat}
@@ -364,7 +365,7 @@ const Catalog = () => {
                       value={activeSubCategory}
                       onValueChange={(val) => {
                         setActiveSubCategory(val);
-                        setVisibleCount(16);
+                        setVisibleCounts({});
                       }}
                     >
                       <SelectTrigger className="w-full bg-card/80 border-border/60 font-semibold rounded-full px-4 py-3 h-auto shadow-md shadow-black/5 text-foreground">
@@ -439,7 +440,7 @@ const Catalog = () => {
                   </div>
                   <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
                     <AnimatePresence mode="popLayout">
-                      {categoryProducts.slice(0, visibleCount).map((product, i) => (
+                      {categoryProducts.slice(0, getVisibleCount(subCategoryName)).map((product, i) => (
                         <ProductCard 
                           key={product._id || product.id} 
                           product={product} 
@@ -451,22 +452,22 @@ const Catalog = () => {
                       ))}
                     </AnimatePresence>
                   </div>
+                  {categoryProducts.length > getVisibleCount(subCategoryName) && (
+                    <div className="flex justify-center mt-8 mb-4">
+                      <button 
+                        onClick={() => setVisibleCounts(prev => ({ ...prev, [subCategoryName]: getVisibleCount(subCategoryName) + 8 }))}
+                        className="px-6 py-2.5 rounded-full bg-card border-2 border-primary/50 text-foreground text-sm font-semibold hover:border-primary hover:text-primary transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_25px_rgba(212,175,55,0.3)]"
+                      >
+                        Load More in {subCategoryName}
+                      </button>
+                    </div>
+                  )}
                 </div>
               ));
             })()
           )}
         </div>
 
-        {filteredProducts.length > visibleCount && (
-          <div className="flex justify-center mt-12 pb-4">
-            <button 
-              onClick={() => setVisibleCount(prev => prev + 16)}
-              className="px-8 py-3 rounded-full bg-card border-2 border-primary/50 text-foreground font-semibold hover:border-primary hover:text-primary transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_25px_rgba(212,175,55,0.3)]"
-            >
-              Load More Products
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Cart Popup is now global in App.tsx */}
