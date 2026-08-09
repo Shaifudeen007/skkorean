@@ -77,11 +77,7 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove, viewMode }: { 
             <h3 className="font-outfit font-bold text-sm sm:text-lg text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
               {product.name}
             </h3>
-            {product.description && (
-              <p className="text-[10px] sm:text-xs text-foreground/60 line-clamp-1 sm:line-clamp-2 mb-1.5 hidden sm:block">
-                {product.description}
-              </p>
-            )}
+
           </div>
           
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-1.5 sm:gap-0 mt-auto">

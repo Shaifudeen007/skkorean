@@ -8,11 +8,22 @@ const ContactUs = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert("Thank you! Your enquiry has been sent. We will contact you shortly.");
-    }, 1500);
+    
+    const nameElement = document.getElementById('name') as HTMLInputElement;
+    const phoneElement = document.getElementById('phone') as HTMLInputElement;
+    const emailElement = document.getElementById('email') as HTMLInputElement;
+    const messageElement = document.getElementById('message') as HTMLTextAreaElement;
+
+    const name = nameElement?.value || '';
+    const phone = phoneElement?.value || '';
+    const email = emailElement?.value || '';
+    const message = messageElement?.value || '';
+
+    const text = `New Enquiry:%0A%0AName: ${name}%0APhone: ${phone}%0AEmail: ${email}%0AMessage: ${message}`;
+    const whatsappUrl = `https://wa.me/918610345830?text=${text}`;
+
+    window.open(whatsappUrl, '_blank');
+    setIsSubmitting(false);
   };
 
   return (

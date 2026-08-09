@@ -53,7 +53,6 @@ const NAV_LINKS = [
   { name: 'Home', href: '/#home' },
   { name: 'About Us', href: '/#about' },
   { name: 'Products', href: '/#products', isProducts: true },
-  { name: 'Why Choose Us', href: '/#why-us' },
   { name: 'Projects / Portfolio', href: '/#portfolio' },
   { name: 'Contact Us', href: '/#contact' },
 ];

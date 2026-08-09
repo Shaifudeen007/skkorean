@@ -63,6 +63,9 @@ const Hero = ({ loading }: { loading: boolean }) => {
               <Link to="/catalog" className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-[1.5rem] bg-gold-gradient text-white font-semibold shadow-[0_10px_30px_rgba(212,175,55,0.25)] hover:shadow-[0_15px_40px_rgba(212,175,55,0.4)] transition-all transform hover:-translate-y-1">
                 Explore Machines
               </Link>
+              <a href="https://skinternationalinstitute.com/" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[1.5rem] border-2 border-primary/30 bg-primary/10 backdrop-blur-md text-primary hover:border-primary/60 hover:bg-primary/20 transition-all font-semibold">
+                Explore Courses
+              </a>
               <a href="https://wa.me/918610345830" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[1.5rem] border-2 border-border bg-card/50 backdrop-blur-md text-foreground hover:border-primary/50 hover:bg-card transition-all group">
                 <MessageCircle className="w-5 h-5 text-[#25D366] group-hover:scale-110 transition-transform" />
                 <span>WhatsApp Enquiry</span>
