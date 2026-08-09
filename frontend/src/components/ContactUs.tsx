@@ -19,10 +19,10 @@ const ContactUs = () => {
     const email = emailElement?.value || '';
     const message = messageElement?.value || '';
 
-    const text = `New Enquiry:%0A%0AName: ${name}%0APhone: ${phone}%0AEmail: ${email}%0AMessage: ${message}`;
+    const text = encodeURIComponent(`New Enquiry:\n\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\nMessage: ${message}`);
     const whatsappUrl = `https://wa.me/918610345830?text=${text}`;
 
-    window.open(whatsappUrl, '_blank');
+    window.location.href = whatsappUrl;
     setIsSubmitting(false);
   };
 
