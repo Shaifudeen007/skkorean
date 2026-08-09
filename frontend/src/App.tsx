@@ -166,7 +166,7 @@ const MobileBottomBar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme
           <Info className="w-5 h-5" />
           <span className="text-[10px] font-medium">About</span>
         </a>
-        <a href="/#products" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        <a href="/catalog" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <Package className="w-5 h-5" />
           <span className="text-[10px] font-medium">Products</span>
         </a>
