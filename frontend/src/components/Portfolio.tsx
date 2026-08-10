@@ -23,8 +23,13 @@ const Portfolio = () => {
     fetchGallery();
   }, []);
 
-  if (loading || !Array.isArray(projects) || projects.length === 0) return null;
-
+  if (loading) {
+    return (
+      <section id="portfolio" className="pt-12 pb-4 relative overflow-hidden scroll-mt-20 min-h-[400px] flex justify-center items-center">
+        <div className="w-8 h-8 rounded-full border-[3px] border-primary/20 border-t-primary animate-spin" />
+      </section>
+    );
+  }
   return (
     <section id="portfolio" className="pt-12 pb-4 relative overflow-hidden scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -65,52 +70,58 @@ const Portfolio = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project._id || project.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              onClick={() => setSelectedProject(project)}
-              className="group relative h-[350px] sm:h-[400px] rounded-[2rem] overflow-hidden cursor-pointer"
-            >
-              {/* Background Image */}
-              <div className="absolute inset-0 w-full h-full bg-primary/5">
-                <img 
-                  src={getImageUrl(project.url)} 
-                  alt={project.title || 'Gallery Image'}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                />
-              </div>
-
-              {/* Gradient Overlay for Text Readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 group-hover:from-black/95 transition-colors duration-300" />
-
-              {/* Border Overlay */}
-              <div className="absolute inset-0 border-[3px] border-white/10 rounded-[2rem] group-hover:border-primary/50 transition-colors duration-300 pointer-events-none z-10" />
-
-              {/* Content */}
-              <div className="absolute bottom-0 w-full p-8 flex flex-col justify-end z-20 h-full">
-                <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-out">
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white mb-3">
-                    {project.title || 'Installation'}
-                  </h3>
-                  {project.description && (
-                    <p className="text-white/70 text-sm sm:text-base leading-relaxed line-clamp-2 group-hover:line-clamp-3 transition-all duration-300 mb-6">
-                      {project.description}
-                    </p>
-                  )}
-                  
-                  <div className="inline-flex items-center gap-2 text-primary text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <ArrowRight className="w-0 h-0 hidden" />
+        {(!Array.isArray(projects) || projects.length === 0) ? (
+          <div className="text-center text-foreground/50 py-10 font-medium">
+            More projects coming soon.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {projects.map((project, index) => (
+              <motion.div
+                key={project._id || project.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                onClick={() => setSelectedProject(project)}
+                className="group relative h-[350px] sm:h-[400px] rounded-[2rem] overflow-hidden cursor-pointer"
+              >
+                {/* Background Image */}
+                <div className="absolute inset-0 w-full h-full bg-primary/5">
+                  <img 
+                    src={getImageUrl(project.url)} 
+                    alt={project.title || 'Gallery Image'}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                  />
+                </div>
+  
+                {/* Gradient Overlay for Text Readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 group-hover:from-black/95 transition-colors duration-300" />
+  
+                {/* Border Overlay */}
+                <div className="absolute inset-0 border-[3px] border-white/10 rounded-[2rem] group-hover:border-primary/50 transition-colors duration-300 pointer-events-none z-10" />
+  
+                {/* Content */}
+                <div className="absolute bottom-0 w-full p-8 flex flex-col justify-end z-20 h-full">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-out">
+                    <h3 className="text-2xl sm:text-3xl font-serif font-bold text-white mb-3">
+                      {project.title || 'Installation'}
+                    </h3>
+                    {project.description && (
+                      <p className="text-white/70 text-sm sm:text-base leading-relaxed line-clamp-2 group-hover:line-clamp-3 transition-all duration-300 mb-6">
+                        {project.description}
+                      </p>
+                    )}
+                    
+                    <div className="inline-flex items-center gap-2 text-primary text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <ArrowRight className="w-0 h-0 hidden" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
       </div>
       

@@ -174,11 +174,17 @@ const Products = () => {
   }, [safeProductsData, safeMainCategories]);
 
   if (loading) return (
-    <div className="flex justify-center items-center py-20 w-full">
-      <Loader2 className="w-8 h-8 animate-spin text-primary" />
-    </div>
+    <section id="products" className="pt-12 pb-4 relative overflow-hidden scroll-mt-20">
+      <div className="flex justify-center items-center py-20 w-full">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    </section>
   );
-  if (error) return <div className="text-center py-20 text-red-500 font-semibold">{error}</div>;
+  if (error) return (
+    <section id="products" className="pt-12 pb-4 relative overflow-hidden scroll-mt-20">
+      <div className="text-center py-20 text-red-500 font-semibold">{error}</div>
+    </section>
+  );
 
   return (
     <section id="products" className="pt-12 pb-4 relative overflow-hidden scroll-mt-20">
