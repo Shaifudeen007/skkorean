@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Circle, Search, LayoutGrid, List, SlidersHorizontal, X } from 'lucide-react';
+import { CheckCircle2, Circle, Search, LayoutGrid, List, SlidersHorizontal, X, Loader2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api, { getImageUrl } from '../services/api';
 import { useCart } from '../context/CartContext';
@@ -629,10 +629,8 @@ const Catalog = () => {
             {/* Product List/Grid */}
             <div className="w-full">
               {loading ? (
-                <div className={viewMode === 'grid' ? "grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5" : "flex flex-col gap-0"}>
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <SkeletonCard key={i} viewMode={viewMode} />
-                  ))}
+                <div className="flex justify-center items-center py-20 w-full">
+                  <Loader2 className="w-10 h-10 animate-spin text-primary" />
                 </div>
               ) : error ? (
                 <div className="text-center py-20 text-red-500 font-semibold">{error}</div>

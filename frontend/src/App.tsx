@@ -65,6 +65,8 @@ const MAIN_CATEGORIES_DROPDOWN = [
   { name: 'Korean Products', href: '/catalog?mainCategory=Korean%20Products' },
 ];
 
+import { Link } from 'react-router-dom';
+
 const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -81,10 +83,10 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
-            <a href="/#home" className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight">
+            <Link to="/#home" className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight">
               <span className="bg-clip-text text-transparent bg-glare-gradient bg-[length:200%_auto] animate-text-glare">SK</span>
               <span className="bg-clip-text text-transparent bg-gold-gradient ml-1">Korean Aesthetic Technologies</span>
-            </a>
+            </Link>
           </div>
           
           <div className="hidden xl:flex items-center space-x-6 text-sm font-medium">
@@ -92,31 +94,31 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
               if (link.isProducts) {
                 return (
                   <div key={link.name} className="relative group cursor-pointer flex items-center gap-1 text-foreground hover:text-primary transition-colors py-2">
-                    <a href={link.href} className="text-foreground hover:text-primary transition-colors font-medium">{link.name}</a>
+                    <Link to={link.href} className="text-foreground hover:text-primary transition-colors font-medium">{link.name}</Link>
                     <ChevronDown className="w-4 h-4 text-foreground/70 group-hover:text-primary transition-transform group-hover:rotate-180" />
                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-black backdrop-blur-md border border-border/50 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
                       {MAIN_CATEGORIES_DROPDOWN.map(cat => (
-                        <a 
+                        <Link 
                           key={cat.name} 
-                          href={cat.href} 
+                          to={cat.href} 
                           className="px-4 py-2.5 hover:bg-primary/20 hover:text-primary transition-colors text-white text-xs font-semibold flex items-center gap-2"
                         >
                           <span className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary"></span>
                           {cat.name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>
                 );
               }
               return (
-                <a 
+                <Link 
                   key={link.name} 
-                  href={link.href} 
+                  to={link.href} 
                   className="text-foreground hover:text-primary transition-colors font-medium"
                 >
                   {link.name}
-                </a>
+                </Link>
               );
             })}
             
@@ -157,26 +159,26 @@ const MobileBottomBar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme
       <div className={`rounded-full px-6 py-3 flex justify-between items-center transition-all duration-300 ${
         isScrolled ? 'bg-card/90 backdrop-blur-xl border border-border/50 shadow-2xl shadow-black/20' : 'bg-card/90 backdrop-blur-xl border border-border/50 shadow-lg'
       }`}>
-        <a href="/#home" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        <Link to="/#home" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <Home className="w-5 h-5" />
           <span className="text-[10px] font-medium">Home</span>
-        </a>
-        <a href="/#about" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        </Link>
+        <Link to="/#about" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <Info className="w-5 h-5" />
           <span className="text-[10px] font-medium">About</span>
-        </a>
-        <a href="/catalog" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        </Link>
+        <Link to="/catalog" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <Package className="w-5 h-5" />
           <span className="text-[10px] font-medium">Products</span>
-        </a>
-        <a href="/#portfolio" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        </Link>
+        <Link to="/#portfolio" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <Briefcase className="w-5 h-5" />
           <span className="text-[10px] font-medium">Projects</span>
-        </a>
-        <a href="/#contact" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        </Link>
+        <Link to="/#contact" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <MessageSquare className="w-5 h-5" />
           <span className="text-[10px] font-medium">Contact</span>
-        </a>
+        </Link>
       </div>
     </div>
   );

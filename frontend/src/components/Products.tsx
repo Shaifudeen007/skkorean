@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Circle, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Circle, ArrowRight, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api, { getImageUrl } from '../services/api';
 import { useCart } from '../context/CartContext';
@@ -173,7 +173,11 @@ const Products = () => {
     return groups;
   }, [safeProductsData, safeMainCategories]);
 
-  if (loading) return <div className="text-center py-20 text-foreground font-semibold">Loading featured products...</div>;
+  if (loading) return (
+    <div className="flex justify-center items-center py-20 w-full">
+      <Loader2 className="w-8 h-8 animate-spin text-primary" />
+    </div>
+  );
   if (error) return <div className="text-center py-20 text-red-500 font-semibold">{error}</div>;
 
   return (

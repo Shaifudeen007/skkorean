@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -72,11 +73,11 @@ const Footer = () => {
           >
             <h4 className="font-outfit font-bold text-lg text-foreground mb-6">Quick Links</h4>
             <div className="flex flex-col gap-3">
-              <a href="/#home" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Home</a>
-              <a href="/#about" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">About Us</a>
-              <a href="/#products" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Products</a>
-              <a href="/#portfolio" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Projects / Portfolio</a>
-              <a href="/#contact" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Contact Us</a>
+              <Link to="/#home" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Home</Link>
+              <Link to="/#about" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">About Us</Link>
+              <Link to="/#products" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Products</Link>
+              <Link to="/#portfolio" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Projects / Portfolio</Link>
+              <Link to="/#contact" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Contact Us</Link>
             </div>
           </motion.div>
 
