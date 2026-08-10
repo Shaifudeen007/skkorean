@@ -154,16 +154,26 @@ const MobileBottomBar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (window.location.pathname === '/' && href.startsWith('/#')) {
+      const targetId = href.replace('/#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <div className="xl:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-sm transition-all duration-300">
       <div className={`rounded-full px-6 py-3 flex justify-between items-center transition-all duration-300 ${
         isScrolled ? 'bg-card/90 backdrop-blur-xl border border-border/50 shadow-2xl shadow-black/20' : 'bg-card/90 backdrop-blur-xl border border-border/50 shadow-lg'
       }`}>
-        <Link to="/#home" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        <Link to="/#home" onClick={(e) => handleHashClick(e, '/#home')} className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <Home className="w-5 h-5" />
           <span className="text-[10px] font-medium">Home</span>
         </Link>
-        <Link to="/#about" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        <Link to="/#about" onClick={(e) => handleHashClick(e, '/#about')} className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <Info className="w-5 h-5" />
           <span className="text-[10px] font-medium">About</span>
         </Link>
@@ -171,11 +181,11 @@ const MobileBottomBar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme
           <Package className="w-5 h-5" />
           <span className="text-[10px] font-medium">Products</span>
         </Link>
-        <Link to="/#portfolio" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        <Link to="/#portfolio" onClick={(e) => handleHashClick(e, '/#portfolio')} className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <Briefcase className="w-5 h-5" />
           <span className="text-[10px] font-medium">Projects</span>
         </Link>
-        <Link to="/#contact" className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
+        <Link to="/#contact" onClick={(e) => handleHashClick(e, '/#contact')} className="group flex flex-col items-center gap-1 text-foreground/70 hover:text-primary transition-all">
           <MessageSquare className="w-5 h-5" />
           <span className="text-[10px] font-medium">Contact</span>
         </Link>
