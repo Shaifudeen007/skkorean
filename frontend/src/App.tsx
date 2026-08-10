@@ -107,6 +107,16 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (window.location.pathname === '/' && href.startsWith('/#')) {
+      const targetId = href.replace('/#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <nav className={`fixed w-full z-50 top-0 transition-all duration-300 font-outfit ${
       isScrolled ? 'bg-background/80 backdrop-blur-xl border-b border-border shadow-lg shadow-black/5' : 'bg-transparent border-transparent'
@@ -114,7 +124,7 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
-            <Link to="/#home" className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight">
+            <Link to="/#home" onClick={(e) => handleHashClick(e, '/#home')} className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-tight">
               <span className="bg-clip-text text-transparent bg-glare-gradient bg-[length:200%_auto] animate-text-glare">SK</span>
               <span className="bg-clip-text text-transparent bg-gold-gradient ml-1">Korean Aesthetic Technologies</span>
             </Link>
@@ -125,7 +135,7 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
               if (link.isProducts) {
                 return (
                   <div key={link.name} className="relative group cursor-pointer flex items-center gap-1 text-foreground hover:text-primary transition-colors py-2">
-                    <Link to={link.href} className="text-foreground hover:text-primary transition-colors font-medium">{link.name}</Link>
+                    <Link to={link.href} onClick={(e) => handleHashClick(e, link.href)} className="text-foreground hover:text-primary transition-colors font-medium">{link.name}</Link>
                     <ChevronDown className="w-4 h-4 text-foreground/70 group-hover:text-primary transition-transform group-hover:rotate-180" />
                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-black backdrop-blur-md border border-border/50 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
                       {MAIN_CATEGORIES_DROPDOWN.map(cat => (
@@ -146,6 +156,7 @@ const Navbar = ({ isDark, toggleTheme }: { isDark: boolean, toggleTheme: () => v
                 <Link 
                   key={link.name} 
                   to={link.href} 
+                  onClick={(e) => handleHashClick(e, link.href)}
                   className="text-foreground hover:text-primary transition-colors font-medium"
                 >
                   {link.name}
