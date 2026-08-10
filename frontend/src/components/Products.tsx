@@ -181,7 +181,7 @@ const Products = () => {
   if (error) return <div className="text-center py-20 text-red-500 font-semibold">{error}</div>;
 
   return (
-    <section id="products" className="pt-20 pb-8 relative overflow-hidden scroll-mt-20">
+    <section id="products" className="pt-12 pb-4 relative overflow-hidden scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         <motion.div 

@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="absolute -top-[200px] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/5 blur-[120px] rounded-[100%]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-20 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-12 pb-12">
         {/* Top Call to Action */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}

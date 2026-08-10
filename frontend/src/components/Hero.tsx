@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const Hero = ({ loading }: { loading: boolean }) => {
   return (
-    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 min-h-screen flex items-center overflow-hidden">
+    <section className="relative pt-32 pb-10 lg:pt-48 lg:pb-16 min-h-screen flex items-center overflow-hidden">
       
       {/* Background Decorative Grid */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]" 
