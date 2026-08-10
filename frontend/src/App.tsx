@@ -39,18 +39,39 @@ const ScrollToTop = ({ loading }: { loading: boolean }) => {
       const targetId = cleanHash.replace('#', '');
       
       let attempts = 0;
+      let stableCount = 0;
+
       const intervalId = setInterval(() => {
         const element = document.getElementById(targetId);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-          clearInterval(intervalId);
-        } else if (attempts >= 40) {
+          const rect = element.getBoundingClientRect();
+          if (Math.abs(rect.top) < 150) {
+            stableCount++;
+          } else {
+            element.scrollIntoView({ behavior: 'auto' });
+            stableCount = 0;
+          }
+
+          if (stableCount >= 5) {
+            clearInterval(intervalId);
+          }
+        }
+        
+        attempts++;
+        if (attempts >= 50) {
           clearInterval(intervalId);
         }
-        attempts++;
       }, 100);
 
-      return () => clearInterval(intervalId);
+      const cancelScroll = () => clearInterval(intervalId);
+      window.addEventListener('wheel', cancelScroll, { passive: true });
+      window.addEventListener('touchstart', cancelScroll, { passive: true });
+
+      return () => {
+        clearInterval(intervalId);
+        window.removeEventListener('wheel', cancelScroll);
+        window.removeEventListener('touchstart', cancelScroll);
+      };
     } else {
       window.scrollTo(0, 0);
     }
