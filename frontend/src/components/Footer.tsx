@@ -73,11 +73,36 @@ const Footer = () => {
           >
             <h4 className="font-outfit font-bold text-lg text-foreground mb-6">Quick Links</h4>
             <div className="flex flex-col gap-3">
-              <Link to="/#home" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Home</Link>
-              <Link to="/#about" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">About Us</Link>
-              <Link to="/#products" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Products</Link>
-              <Link to="/#portfolio" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Projects / Portfolio</Link>
-              <Link to="/#contact" className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Contact Us</Link>
+              <Link to="/#home" onClick={(e) => {
+                if (window.location.pathname === '/') {
+                  const el = document.getElementById('home');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }} className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Home</Link>
+              <Link to="/#about" onClick={(e) => {
+                if (window.location.pathname === '/') {
+                  const el = document.getElementById('about');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }} className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">About Us</Link>
+              <Link to="/#products" onClick={(e) => {
+                if (window.location.pathname === '/') {
+                  const el = document.getElementById('products');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }} className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Products</Link>
+              <Link to="/#portfolio" onClick={(e) => {
+                if (window.location.pathname === '/') {
+                  const el = document.getElementById('portfolio');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }} className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Projects / Portfolio</Link>
+              <Link to="/#contact" onClick={(e) => {
+                if (window.location.pathname === '/') {
+                  const el = document.getElementById('contact');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }} className="text-foreground/60 hover:text-primary transition-colors text-sm w-fit">Contact Us</Link>
             </div>
           </motion.div>
 

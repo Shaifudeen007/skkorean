@@ -35,12 +35,20 @@ const ScrollToTop = () => {
     if (hash) {
       const cleanHash = hash.split('?')[0];
       const targetId = cleanHash.replace('#', '');
-      setTimeout(() => {
+      
+      let attempts = 0;
+      const intervalId = setInterval(() => {
         const element = document.getElementById(targetId);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth' });
+          clearInterval(intervalId);
+        } else if (attempts >= 40) {
+          clearInterval(intervalId);
         }
+        attempts++;
       }, 100);
+
+      return () => clearInterval(intervalId);
     } else {
       window.scrollTo(0, 0);
     }
