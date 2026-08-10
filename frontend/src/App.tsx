@@ -28,10 +28,12 @@ import { CartProvider } from './context/CartContext';
 import CartPopup from './components/CartPopup';
 import Catalog from './pages/Catalog';
 
-const ScrollToTop = () => {
+const ScrollToTop = ({ loading }: { loading: boolean }) => {
   const { pathname, hash, search } = useLocation();
 
   useEffect(() => {
+    if (loading) return;
+
     if (hash) {
       const cleanHash = hash.split('?')[0];
       const targetId = cleanHash.replace('#', '');
@@ -52,7 +54,7 @@ const ScrollToTop = () => {
     } else {
       window.scrollTo(0, 0);
     }
-  }, [pathname, hash, search]);
+  }, [pathname, hash, search, loading]);
 
   return null;
 };
@@ -255,7 +257,7 @@ function App() {
   return (
     <CartProvider>
       <Router>
-        <ScrollToTop />
+        <ScrollToTop loading={loading} />
         <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 scroll-smooth relative z-0">
           <BackgroundEffects />
           <CartPopup />
