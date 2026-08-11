@@ -81,20 +81,18 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove, viewMode }: { 
           </div>
           
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-1.5 sm:gap-0 mt-auto">
-            {hasPrice ? (
-              <div className="flex flex-col">
-                {hasDiscount && (
-                  <span className="text-[9px] sm:text-xs text-foreground/50 line-through">
-                    &#8377;{originalPrice}
-                  </span>
-                )}
+            {originalPrice ? (
+              <div className="flex flex-col gap-0.5">
                 <span className="font-outfit font-bold text-sm sm:text-xl text-foreground leading-tight">
-                  &#8377;{currentPrice}
+                  MRP: &#8377;{originalPrice}
+                </span>
+                <span className="text-[10px] sm:text-xs text-primary font-semibold hover:underline cursor-pointer">
+                  Enquire for best price
                 </span>
               </div>
             ) : (
               <span className="font-outfit font-bold text-[10px] sm:text-sm text-primary uppercase tracking-wider">
-                Enquire
+                Enquire for best price
               </span>
             )}
 
@@ -169,20 +167,18 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove, viewMode }: { 
         </div>
         
         <div className="flex flex-col mt-auto pt-1 gap-1.5">
-          {hasPrice ? (
-            <div className="flex flex-col gap-0">
-              {hasDiscount && (
-                <span className="text-[9px] sm:text-[10px] text-foreground/50 line-through">
-                  &#8377;{originalPrice}
-                </span>
-              )}
+          {originalPrice ? (
+            <div className="flex flex-col gap-0.5">
               <span className="font-outfit font-bold text-[13px] sm:text-base text-foreground leading-none">
-                &#8377;{currentPrice}
+                MRP: &#8377;{originalPrice}
+              </span>
+              <span className="text-[10px] sm:text-[11px] text-primary font-semibold hover:underline cursor-pointer">
+                Enquire for best price
               </span>
             </div>
           ) : (
             <span className="font-outfit font-bold text-[10px] sm:text-[11px] text-primary uppercase tracking-wider">
-              Enquire
+              Enquire for best price
             </span>
           )}
           

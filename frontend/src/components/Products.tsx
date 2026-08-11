@@ -58,20 +58,18 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove }: { product: a
         </div>
         
         <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mt-2 gap-2 xl:gap-0">
-          {(product.price || product.discountPrice || product.mrp) ? (
+          {(product.originalPrice || product.mrp) ? (
             <div className="flex flex-col gap-0.5">
-              {(product.originalPrice || product.mrp) && (
-                <span className="text-[11px] sm:text-xs text-foreground/50 line-through">
-                  &#8377;{product.originalPrice || product.mrp}
-                </span>
-              )}
               <span className="font-outfit font-bold text-base sm:text-xl text-foreground">
-                &#8377;{product.discountPrice || product.price || product.mrp}
+                MRP: &#8377;{product.originalPrice || product.mrp}
+              </span>
+              <span className="text-[11px] sm:text-xs text-primary font-semibold hover:underline cursor-pointer">
+                Enquire for best price
               </span>
             </div>
           ) : (
             <span className="font-outfit font-bold text-sm sm:text-base text-primary uppercase tracking-wider">
-              Enquire
+              Enquire for best price
             </span>
           )}
           
