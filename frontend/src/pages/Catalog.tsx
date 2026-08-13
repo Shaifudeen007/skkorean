@@ -83,15 +83,15 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove, viewMode }: { 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-1.5 sm:gap-0 mt-auto">
             {originalPrice ? (
               <div className="flex flex-col gap-0.5">
-                <span className="font-outfit font-bold text-sm sm:text-xl text-foreground leading-tight">
+                <span className="font-outfit font-bold text-sm sm:text-xl text-foreground/50 line-through leading-tight">
                   MRP: &#8377;{originalPrice}
                 </span>
-                <span className="text-[10px] sm:text-xs text-primary font-semibold hover:underline cursor-pointer">
+                <span className="text-[10px] sm:text-xs text-primary font-semibold hover:underline cursor-pointer drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
                   Enquire for best price
                 </span>
               </div>
             ) : (
-              <span className="font-outfit font-bold text-[10px] sm:text-sm text-primary uppercase tracking-wider">
+              <span className="font-outfit font-bold text-[10px] sm:text-sm text-primary uppercase tracking-wider drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
                 Enquire for best price
               </span>
             )}
@@ -169,15 +169,15 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove, viewMode }: { 
         <div className="flex flex-col mt-auto pt-1 gap-1.5">
           {originalPrice ? (
             <div className="flex flex-col gap-0.5">
-              <span className="font-outfit font-bold text-[13px] sm:text-base text-foreground leading-none">
+              <span className="font-outfit font-bold text-[13px] sm:text-base text-foreground/50 line-through leading-none">
                 MRP: &#8377;{originalPrice}
               </span>
-              <span className="text-[10px] sm:text-[11px] text-primary font-semibold hover:underline cursor-pointer">
+              <span className="text-[10px] sm:text-[11px] text-primary font-semibold hover:underline cursor-pointer drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
                 Enquire for best price
               </span>
             </div>
           ) : (
-            <span className="font-outfit font-bold text-[10px] sm:text-[11px] text-primary uppercase tracking-wider">
+            <span className="font-outfit font-bold text-[10px] sm:text-[11px] text-primary uppercase tracking-wider drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
               Enquire for best price
             </span>
           )}

@@ -245,15 +245,15 @@ const ProductDetail = () => {
               <div className="flex flex-col gap-2 mb-6 pb-6 border-b border-border/50">
                 {(product.mrp || product.originalPrice) ? (
                   <>
-                    <span className="text-3xl sm:text-4xl font-outfit font-extrabold text-foreground">
+                    <span className="text-3xl sm:text-4xl font-outfit font-extrabold text-foreground/50 line-through">
                       MRP: ₹{product.mrp || product.originalPrice}
                     </span>
-                    <span className="text-lg font-outfit font-bold text-primary hover:underline cursor-pointer w-fit" onClick={() => window.location.href='/contact'}>
+                    <span className="text-lg font-outfit font-bold text-primary hover:underline cursor-pointer w-fit drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse" onClick={() => window.location.href='/contact'}>
                       Enquire for best price
                     </span>
                   </>
                 ) : (
-                  <span className="text-xl sm:text-2xl font-outfit font-bold text-primary tracking-wider uppercase bg-primary/10 px-4 py-1.5 rounded-xl border border-primary/20 w-fit">
+                  <span className="text-xl sm:text-2xl font-outfit font-bold text-primary tracking-wider uppercase bg-primary/10 px-4 py-1.5 rounded-xl border border-primary/20 w-fit drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
                     Enquire for best price
                   </span>
                 )}
@@ -450,15 +450,15 @@ const ProductDetail = () => {
                     <div>
                       {(p.mrp || p.originalPrice) ? (
                         <div className="flex flex-col gap-0.5">
-                          <span className="font-outfit font-bold text-lg text-foreground">
+                          <span className="font-outfit font-bold text-lg text-foreground/50 line-through">
                             MRP: &#8377;{p.mrp || p.originalPrice}
                           </span>
-                          <span className="text-[10px] text-primary font-semibold hover:underline cursor-pointer">
+                          <span className="text-[10px] text-primary font-semibold hover:underline cursor-pointer drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
                             Enquire for best price
                           </span>
                         </div>
                       ) : (
-                        <span className="font-outfit font-bold text-sm text-primary uppercase tracking-wider">
+                        <span className="font-outfit font-bold text-sm text-primary uppercase tracking-wider drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
                           Enquire for best price
                         </span>
                       )}
