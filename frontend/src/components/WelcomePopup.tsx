@@ -16,6 +16,8 @@ const POPUP_IMAGES = [
 const WelcomePopup = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   useEffect(() => {
     // Check if we already showed it in this session to avoid annoyance
@@ -33,6 +35,30 @@ const WelcomePopup = () => {
 
   const nextImage = () => setCurrentIndex((prev) => (prev === POPUP_IMAGES.length - 1 ? 0 : prev + 1));
   const prevImage = () => setCurrentIndex((prev) => (prev === 0 ? POPUP_IMAGES.length - 1 : prev - 1));
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      nextImage();
+    } else if (isRightSwipe) {
+      prevImage();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -63,7 +89,12 @@ const WelcomePopup = () => {
             <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
           </button>
 
-          <div className="w-full h-full relative overflow-hidden rounded-2xl flex items-center justify-center">
+          <div 
+            className="w-full h-full relative overflow-hidden rounded-2xl flex items-center justify-center"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
             <AnimatePresence mode="wait">
               <motion.img
                 key={currentIndex}
