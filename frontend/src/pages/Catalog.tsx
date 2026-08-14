@@ -52,11 +52,7 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove, viewMode }: { 
             {isSelected ? <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> : <Circle className="w-3.5 h-3.5 sm:w-5 sm:h-5" />}
           </button>
           
-          {hasDiscount && (
-             <div className="absolute bottom-1.5 left-1.5 z-20 bg-red-500 text-white text-[8px] sm:text-xs font-bold px-1.5 py-0.5 rounded shadow-sm">
-               -{discountPercent}%
-             </div>
-          )}
+
 
           <img 
             src={imageUrl} 
@@ -81,20 +77,9 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove, viewMode }: { 
           </div>
           
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-1.5 sm:gap-0 mt-auto">
-            {originalPrice ? (
-              <div className="flex flex-col gap-0.5">
-                <span className="font-outfit font-bold text-sm sm:text-xl text-foreground/50 line-through leading-tight">
-                  MRP: &#8377;{originalPrice}
-                </span>
-                <span className="text-[10px] sm:text-xs text-primary font-semibold hover:underline cursor-pointer drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
-                  Enquire for best price
-                </span>
-              </div>
-            ) : (
-              <span className="font-outfit font-bold text-[10px] sm:text-sm text-primary uppercase tracking-wider drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
-                Enquire for best price
-              </span>
-            )}
+            <span className="font-outfit font-bold text-[10px] sm:text-sm text-primary uppercase tracking-wider drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
+              Enquire for best price
+            </span>
 
             {isSelected ? (
               <div className="flex items-center gap-2 bg-primary/10 rounded-full px-1.5 py-1 sm:px-2">
@@ -139,11 +124,7 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove, viewMode }: { 
           {isSelected ? <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Circle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
         </button>
         
-        {hasDiscount && (
-           <div className="absolute top-1.5 left-1.5 z-20 bg-red-500 text-white text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm">
-             -{discountPercent}%
-           </div>
-        )}
+
 
         <img 
           src={imageUrl} 
@@ -167,20 +148,9 @@ const ProductCard = ({ product, index, quantity, onAdd, onRemove, viewMode }: { 
         </div>
         
         <div className="flex flex-col mt-auto pt-1 gap-1.5">
-          {originalPrice ? (
-            <div className="flex flex-col gap-0.5">
-              <span className="font-outfit font-bold text-[13px] sm:text-base text-foreground/50 line-through leading-none">
-                MRP: &#8377;{originalPrice}
-              </span>
-              <span className="text-[10px] sm:text-[11px] text-primary font-semibold hover:underline cursor-pointer drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
-                Enquire for best price
-              </span>
-            </div>
-          ) : (
-            <span className="font-outfit font-bold text-[10px] sm:text-[11px] text-primary uppercase tracking-wider drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
-              Enquire for best price
-            </span>
-          )}
+          <span className="font-outfit font-bold text-[10px] sm:text-[11px] text-primary uppercase tracking-wider drop-shadow-[0_0_5px_rgba(212,175,55,0.8)] animate-pulse">
+            Enquire for best price
+          </span>
           
           {isSelected ? (
             <div className="flex items-center gap-1 bg-primary/15 rounded-full px-1 py-1 w-full justify-between mt-1">
