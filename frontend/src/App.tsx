@@ -27,6 +27,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { CartProvider } from './context/CartContext';
 import CartPopup from './components/CartPopup';
 import Catalog from './pages/Catalog';
+import WelcomePopup from './components/WelcomePopup';
 
 const ScrollToTop = ({ loading }: { loading: boolean }) => {
   const { pathname, hash, search } = useLocation();
@@ -292,6 +293,7 @@ function App() {
         <ScrollToTop loading={loading} />
         <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 scroll-smooth relative z-0">
           <BackgroundEffects />
+          <WelcomePopup />
           <CartPopup />
           
           <Routes>
