@@ -30,13 +30,6 @@ const WelcomePopup = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev === POPUP_IMAGES.length - 1 ? 0 : prev + 1));
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isOpen]);
 
   const nextImage = () => setCurrentIndex((prev) => (prev === POPUP_IMAGES.length - 1 ? 0 : prev + 1));
   const prevImage = () => setCurrentIndex((prev) => (prev === 0 ? POPUP_IMAGES.length - 1 : prev - 1));
